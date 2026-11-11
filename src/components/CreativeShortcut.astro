@@ -28,10 +28,14 @@ import Arrow from './Arrow.astro';
   if (shortcut) {
     let seen = false;
     try { seen = sessionStorage.getItem(sessionKey) === 'true'; } catch { /* Storage may be disabled. */ }
-    if (!seen) {
+    const show = () => {
+      if (seen) return;
+      seen = true;
       shortcut.hidden = false;
       try { sessionStorage.setItem(sessionKey, 'true'); } catch { /* The shortcut still works without storage. */ }
-    }
+    };
+    if (document.documentElement.classList.contains('intro-active')) document.addEventListener('portfolio:intro-complete', show, { once: true });
+    else show();
     const dismiss = () => {
       const restoreFocus = shortcut.contains(document.activeElement);
       shortcut.hidden = true;
@@ -65,35 +69,35 @@ import Arrow from './Arrow.astro';
     height:126px;
     pointer-events:none;
     opacity:0;
-    stroke:var(--lime);
+    stroke:var(--marigold);
     stroke-width:5;
     stroke-linecap:round;
     stroke-linejoin:round;
     animation:shortcut-pointer var(--shortcut-highlight-duration) ease-out var(--shortcut-entrance-duration) both;
   }
-  .creative-shortcut-pointer .pointer-outline { stroke:var(--teal); stroke-width:9 }
+  .creative-shortcut-pointer .pointer-outline { stroke:var(--aubergine); stroke-width:9 }
   .pointer-mobile { display:none }
   .creative-shortcut {
     position:relative;
     max-height:calc(100dvh - var(--header-height) - 40px);
     overflow-y:auto;
     padding:30px;
-    border:1px solid #0b304833;
-    border-top:4px solid var(--lime);
+    border:1px solid #3a0f3433;
+    border-top:4px solid var(--marigold);
     border-radius:6px;
-    background:var(--pearl);
-    color:var(--teal);
+    background:var(--ice);
+    color:var(--aubergine);
     box-shadow:0 12px 45px #03040726;
-    --accent:var(--teal);
-    --on-accent:var(--pearl);
-    --focus:var(--teal);
+    --accent:var(--aubergine);
+    --on-accent:var(--ice);
+    --focus:var(--aubergine);
     animation:shortcut-in var(--shortcut-entrance-duration) var(--ease) both, shortcut-highlight var(--shortcut-highlight-duration) ease-out var(--shortcut-entrance-duration);
   }
   .creative-shortcut .eyebrow { display:block; padding-right:28px; font-size:10px }
   .creative-shortcut h2 { font-size:36px; margin-top:18px }
   .creative-shortcut p { font-size:16px; line-height:1.7; margin-top:16px }
   .creative-shortcut .button { width:100%; margin-top:22px; gap:16px }
-  .creative-shortcut .button .arrow { color:var(--lime) }
+  .creative-shortcut .button .arrow { color:var(--marigold) }
   .creative-shortcut-close {
     position:absolute; right:8px; top:6px; width:44px; height:44px;
     display:grid; place-items:center; background:none; border:0;
@@ -106,8 +110,8 @@ import Arrow from './Arrow.astro';
   }
   @keyframes shortcut-in { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
   @keyframes shortcut-highlight {
-    0%,100% { box-shadow:0 0 0 0 #b9f12f00,0 12px 45px #03040726 }
-    15%,65% { box-shadow:0 0 0 3px var(--lime),0 0 32px #b9f12f55,0 12px 45px #03040726 }
+    0%,100% { box-shadow:0 0 0 0 #eaaa0000,0 12px 45px #03040726 }
+    15%,65% { box-shadow:0 0 0 3px var(--marigold),0 0 32px #eaaa0055,0 12px 45px #03040726 }
   }
   @keyframes shortcut-pointer { 0%,100% { opacity:0 } 15%,65% { opacity:1 } }
   @media(max-width:639px) {

@@ -1,0 +1,79 @@
+---
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import opentype from 'opentype.js';
+
+// Generate paths at build time: no font request or font parser in the browser.
+const bytes = readFileSync(resolve('node_modules/@fontsource/allura/files/allura-latin-400-normal.woff'));
+const font = opentype.parse(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+const text = 'palash matani';
+const bounds = font.getPath(text, 0, 0, 120).getBoundingBox();
+const paths = font.getPaths(text, 0, 0, 120).filter(path => path.commands.length > 0);
+const pad = 16;
+const viewBox = `${bounds.x1 - pad} ${bounds.y1 - pad} ${bounds.x2 - bounds.x1 + pad * 2} ${bounds.y2 - bounds.y1 + pad * 2}`;
+---
+<div class="signature-intro" role="dialog" aria-modal="true" aria-label="Welcome to Palash Matani’s portfolio">
+  <svg class="signature-mark" viewBox={viewBox} role="img" aria-label="palash matani">
+    {paths.map((path, index) => <path d={path.toPathData(2)} pathLength="1" style={`--letter-delay:${index * 115}ms`} />)}
+  </svg>
+  <button class="signature-skip" type="button">Skip intro <span aria-hidden="true">↗</span></button>
+</div>
+
+<script>
+  const intro = document.querySelector<HTMLElement>('.signature-intro');
+  const content = document.getElementById('site-content');
+  const skip = intro?.querySelector<HTMLButtonElement>('.signature-skip');
+  if (intro && content && skip && document.documentElement.classList.contains('intro-active')) {
+    content.inert = true;
+    let finished = false;
+    let finishTimer: number;
+    const previous = document.activeElement as HTMLElement | null;
+    const release = () => {
+      document.documentElement.classList.remove('intro-active');
+      content.inert = false;
+      try { sessionStorage.setItem('palash-signature-seen', 'true'); } catch { /* Storage is optional. */ }
+      if (intro.contains(document.activeElement)) {
+        const target = previous && previous !== document.body && previous.isConnected ? previous : document.getElementById('main');
+        target?.focus({ preventScroll: true });
+      }
+      document.dispatchEvent(new CustomEvent('portfolio:intro-complete'));
+    };
+    const finish = (immediate = false) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(finishTimer);
+      if (immediate) release();
+      else { intro.classList.add('is-leaving'); window.setTimeout(release, 320); }
+    };
+    skip.addEventListener('click', () => finish());
+    intro.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); finish(); }
+      if (event.key === 'Tab') { event.preventDefault(); skip.focus(); }
+    });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reduce.addEventListener('change', () => { if (reduce.matches) finish(true); });
+    window.addEventListener('pageshow', event => { if (event.persisted) finish(true); });
+    skip.focus({ preventScroll: true });
+    finishTimer = window.setTimeout(() => finish(), 2400);
+  }
+</script>
+
+<style>
+  .signature-intro { display:none; position:fixed; inset:0; z-index:200; background:#3a0f34; color:#eaaa00; place-items:center; padding:32px; opacity:1; transition:opacity 320ms ease }
+  :global(html.intro-active) .signature-intro { display:grid }
+  :global(html.intro-active) { overflow:hidden }
+  :global(html.intro-active #site-content) { visibility:hidden }
+  .signature-intro.is-leaving { opacity:0; pointer-events:none }
+  .signature-mark { width:min(760px,90vw); height:auto; overflow:visible }
+  .signature-mark path {
+    fill:#eaaa00; fill-opacity:0; stroke:#eaaa00; stroke-width:1;
+    stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1;
+    animation:signature-draw 850ms ease-out var(--letter-delay) forwards,signature-fill 400ms ease-out calc(var(--letter-delay) + 600ms) forwards;
+  }
+  .signature-skip { position:absolute; bottom:max(28px,env(safe-area-inset-bottom)); right:32px; min-height:44px; padding:8px 12px; background:none; color:inherit; border:1px solid #eaaa0066; border-radius:4px; font-size:13px; cursor:pointer; --focus:#eaaa00 }
+  .signature-skip span { margin-left:24px }
+  @keyframes signature-draw { to { stroke-dashoffset:0 } }
+  @keyframes signature-fill { to { fill-opacity:1 } }
+  @media(max-width:639px) { .signature-intro { padding:20px } .signature-skip { right:20px } }
+  @media(prefers-reduced-motion:reduce) { .signature-intro { transition:none } }
+</style>

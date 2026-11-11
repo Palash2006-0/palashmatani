@@ -2,6 +2,7 @@
   --font-body:'Manrope Variable',sans-serif;
   --font-display:'Cormorant Garamond',Georgia,serif;
   --pearl:#f2f0e9; --teal:#0b3048; --lime:#b9f12f;
+  --ice:#dde3e8; --aubergine:#3a0f34; --marigold:#eaaa00;
   --black:#030407; --cobalt:#1558c9; --acid:#d4ff24;
   --powder:#8db9f0; --lavender:#e9e8f8; --peach:#f5b69e;
   --sage:#a5a79b; --cream:#e8d2b5; --burgundy:#590907;
@@ -12,6 +13,12 @@
   --header-bg:var(--teal); --header-text:var(--pearl); --header-mark:var(--lime);
   --header-height:76px; --ease:cubic-bezier(.22,1,.36,1);
   color-scheme:light;
+}
+[data-theme=home] {
+  --page-bg:var(--ice); --text:var(--aubergine); --muted-text:#60445c;
+  --line:#a5a1ac; --surface:#cbd2dc; --on-surface:var(--aubergine);
+  --accent:var(--aubergine); --on-accent:var(--ice); --focus:var(--aubergine);
+  --header-bg:var(--ice); --header-text:var(--aubergine); --header-mark:var(--aubergine);
 }
 [data-theme=work] {
   --page-bg:var(--black); --text:var(--pearl); --muted-text:#b5bbc6;

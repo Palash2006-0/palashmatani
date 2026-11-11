@@ -10,13 +10,13 @@ The ribbon asset was inspected locally. Latest checks passed: 24 Astro files wit
 
 ## Build and content checks
 
-- `npm run check`: 25 files checked, 0 errors, 0 warnings, 0 hints.
+- `npm run check`: 28 files checked, 0 errors, 0 warnings, 0 hints.
 - `npm run build`: all 8 static pages generated successfully, including the 404 page.
-- `npm test`: passed 135 local link, image, asset, and anchor references across 8 pages.
+- `npm test`: passed 137 local link, image, asset, and anchor references across 8 pages, plus signature-intro lifecycle checks.
 - Every generated page has one h1. The unpublished fourth example has no public route or list entry.
 - Missing resume and GitHub links are omitted. No placeholder `href="#"` links were found.
 - Authoring seed fields, review flags, local source paths, and draft content are excluded from generated HTML.
-- Largest page's executable inline JavaScript totals approximately 1105 bytes gzip; no separate JavaScript files are emitted. JSON-LD is excluded from that calculation. The test counts both inline and external executable JavaScript against the 80KB budget.
+- Largest page's executable inline JavaScript totals approximately 2141 bytes gzip; no separate JavaScript files are emitted. JSON-LD is excluded from that calculation. The test counts both inline and external executable JavaScript against the 80KB budget.
 - Local responsive WebP images were generated from four real project screenshots and four original parametric ribbon renders. The decorative source assets are approximately 36–43KB each; served variants are smaller as appropriate. Artwork dimensions are reserved, decorative images have empty alternatives inside `aria-hidden` containers, and no WebGL runtime or animation loop is used. Fonts are self-hosted, with licences under `docs/licenses/`.
 
 Commands were run with `ASTRO_TELEMETRY_DISABLED=1` in the sandbox because its Astro telemetry configuration directory is outside the writable workspace. Dependency installation and loopback preview checks used authorised network access. These are environment accommodations, not application dependencies.
@@ -71,3 +71,23 @@ See `CONTENT_REVIEW.md`. A corrected resume, GitHub links, detailed personal con
 Added a Home-only, nonmodal popup headed “Here for the creative work?” with an “Explore the Playground” link and two dismissal buttons. It appears once per tab session, handles unavailable session storage, does not autofocus or lock scrolling, supports Escape without interfering with the open mobile menu, and restores focus when dismissed from within the popup. Responsive maximum height permits internal scrolling on short viewports; global reduced-motion rules disable its entrance animation.
 
 The current type check, build, and all 135 local references pass. Static output inspection confirmed Home-only inclusion, the hidden no-JavaScript fallback, and the session key. Runtime popup interaction and visual placement remain unverified because browser access is still subject to the unresolved automatic approval restriction recorded above. No browser access was retried for this update.
+
+## Home palette update
+
+Home now uses ice silver #DDE3E8, deep aubergine #3A0F34, and marigold #EAAA00, including the header, hero, body typography, creative teaser, footer action, ribbon materials, creative shortcut highlight/arrow, favicon, and share image. The three other page themes retain their own colors. Aubergine text is used on silver and marigold surfaces; marigold is decorative or paired with aubergine rather than used for body text on silver.
+
+The regenerated ribbon/share artwork was inspected locally. Type checking passed for all 25 files; all eight pages built and all 135 local references passed. Browser visual verification remains unavailable under the previously recorded automatic approval restriction; older Home screenshots do not represent this palette.
+
+## Signature intro update
+
+Added a full-viewport aubergine/marigold signature intro, inspired by the supplied Componentry Signature reference, using build-generated Allura SVG paths. The drawing takes approximately 2.4 seconds before a 320ms fade. The intro runs once per tab session on any entry route, has a Skip button and Escape handling, isolates background controls while active, and restores page interaction afterward. Reduced-motion visitors bypass it. A 4.5-second bootstrap fallback releases the page if the later script fails; no JavaScript means no blocking screen.
+
+The creative shortcut now waits for intro completion before appearing or recording its session flag. Its glow and pointer therefore start after the overlay is gone.
+
+Build, 135 local references, and type checks pass. `scripts/verify-intro.mjs` exercises the actual client scripts in an isolated VM with a simulated DOM: completion, popup sequencing, Skip, Escape, changed reduced-motion preference, previously-seen session, bfcache recovery, and storage/script fallback. These are lifecycle unit checks, not browser animation/focus/contrast certification. Visual browser verification remains subject to the unresolved approval restriction described above.
+
+## Personal About section update
+
+Added Home's personal section immediately below the hero, before Projects, with the approved “Away from the keyboard, still exploring.” heading and “never afraid to try or learn something new” addition. It uses the same aubergine/silver/marigold treatment as the creative band, a photo-left/copy-right desktop arrangement, and a stacked layout below 900px. The owner-supplied portrait retains its full 3:4 composition; no location, event, or photography credit was inferred. The caption is “Touching grass, whenever possible.” Home's sections are renumbered, and the scroll hint targets About while the Work CTA remains direct.
+
+All 28 checked files pass without errors/warnings/hints, all eight pages build, all 137 local references pass, and intro lifecycle checks pass. Static HTML inspection verifies the hero → About → Projects order and the approved new sentence. Four responsive WebP derivatives were generated: 320px (11,574 bytes), 480px (21,556 bytes), 640px (30,494 bytes), and 960px (53,840 bytes); none contains EXIF metadata. The portrait is lazy-loaded with reserved dimensions and appropriate alternative text. Browser visual verification remains unavailable under the earlier approval restriction; no new page screenshot or cross-device visual certification is claimed.

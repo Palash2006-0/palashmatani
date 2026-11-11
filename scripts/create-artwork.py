@@ -92,7 +92,7 @@ def render(name, primary, secondary, tilt=0):
 if __name__ == '__main__':
     import sys
     variants = {
-        'possibility': ('#B9F12F', '#F2F0E9', 0),
+        'possibility': ('#EAAA00', '#3A0F34', 0),
         'exploration': ('#1558C9', '#D4FF24', .23),
         'expression': ('#FF5A0A', '#FF9553', -.28),
         'journey': ('#590907', '#E8D2B5', .12),

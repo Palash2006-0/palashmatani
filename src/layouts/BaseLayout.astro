@@ -7,6 +7,7 @@ import '../styles/global.css';
 import '../styles/motion.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import SignatureIntro from '../components/SignatureIntro.astro';
 import { profile } from '../data/profile';
 interface Props { title?: string; description?: string; theme?: 'home' | 'work' | 'journey' | 'playground'; }
 const { title = 'Palash Matani | Computer Science Engineering Portfolio', description = 'Palash Matani, a Computer Science Engineering student at VESIT, exploring software, emerging technology, and creative problem-solving.', theme = 'home' } = Astro.props;
@@ -18,9 +19,27 @@ const person = { '@context': 'https://schema.org', '@type': 'Person', name: prof
 <html lang="en" data-theme={theme}>
   <head>
     <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description}/><meta name="theme-color" content={theme === 'home' ? '#0B3048' : theme === 'work' ? '#030407' : theme === 'journey' ? '#A5A79B' : '#E7B0DE'} />
+    <meta name="description" content={description}/><meta name="theme-color" content={theme === 'home' ? '#DDE3E8' : theme === 'work' ? '#030407' : theme === 'journey' ? '#A5A79B' : '#E7B0DE'} />
     <meta name="robots" content={isPublic ? 'index,follow' : 'noindex,nofollow'} />
     <title>{title}</title><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        let seen = false;
+        try { seen = sessionStorage.getItem('palash-signature-seen') === 'true'; } catch {}
+        if (seen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        document.documentElement.classList.add('intro-active');
+        // Fail open even if the later interaction script fails to initialize.
+        window.setTimeout(() => {
+          if (!document.documentElement.classList.contains('intro-active')) return;
+          document.documentElement.classList.remove('intro-active');
+          const content = document.getElementById('site-content');
+          if (content) content.inert = false;
+          try { sessionStorage.setItem('palash-signature-seen', 'true'); } catch {}
+          document.getElementById('main')?.focus({ preventScroll: true });
+          document.dispatchEvent(new CustomEvent('portfolio:intro-complete'));
+        }, 4500);
+      })();
+    </script>
     {canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:type" content="website"/>
     <meta property="og:image" content={Astro.site ? new URL('/social-preview.png', Astro.site).href : '/social-preview.png'}/>
@@ -28,10 +47,13 @@ const person = { '@context': 'https://schema.org', '@type': 'Person', name: prof
     <script type="application/ld+json" set:html={JSON.stringify(person)} />
   </head>
   <body id="top" class:list={[`theme-${theme}`]}>
+    <SignatureIntro />
+    <div id="site-content">
     <a class="skip-link" href="#main">Skip to content</a>
     <SiteHeader />
     <main id="main" tabindex="-1"><slot /></main>
     <SiteFooter />
+    </div>
     <script>
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
       if (!reduce.matches && 'IntersectionObserver' in window) {
