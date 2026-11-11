@@ -14,6 +14,45 @@
 .contact-arrow .arrow {
   transition:transform 180ms var(--ease)
 }
+.sculpture {
+  perspective:1200px;
+}
+.sculpture img {
+  transform-style:preserve-3d;
+  will-change:transform;
+  animation:sculpture-3d-rotate 28s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+.sculpture-halo {
+  will-change:transform,opacity;
+  animation:halo-pulse 6s ease-in-out infinite alternate;
+}
+@keyframes sculpture-3d-rotate {
+  0% {
+    transform:rotate(0deg) rotateX(0deg) rotateY(0deg) translateY(0px);
+  }
+  25% {
+    transform:rotate(90deg) rotateX(6deg) rotateY(-8deg) translateY(-8px);
+  }
+  50% {
+    transform:rotate(180deg) rotateX(-5deg) rotateY(7deg) translateY(0px);
+  }
+  75% {
+    transform:rotate(270deg) rotateX(7deg) rotateY(-6deg) translateY(8px);
+  }
+  100% {
+    transform:rotate(360deg) rotateX(0deg) rotateY(0deg) translateY(0px);
+  }
+}
+@keyframes halo-pulse {
+  0% {
+    transform:scale(0.95);
+    opacity:0.75;
+  }
+  100% {
+    transform:scale(1.08);
+    opacity:1;
+  }
+}
 @media(prefers-reduced-motion:reduce) {
   html {
     scroll-behavior:auto
