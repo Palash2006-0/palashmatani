@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sculpture from '../components/Sculpture.astro';
+import CurrentFocus from '../components/CurrentFocus.astro';
+import AchievementFeature from '../components/AchievementFeature.astro';
+import { profile } from '../data/profile';
+import { experience } from '../data/experience';
+---
+<BaseLayout theme="journey" title="Journey — Education & Experience | Palash Matani" description="Palash Matani's education at VESIT, internship experience, achievements, and ongoing learning.">
+  <div class="container">
+    <section class="page-intro journey-intro">
+      <div class="intro-composition">
+        <div class="intro-copy">
+          <span class="eyebrow">The journey / Education & experience</span>
+          <h1>Always learning.<br/>Always moving<br/><em>forward.</em></h1>
+          <p>I'm Palash, a Computer Science Engineering student in Mumbai. My experience spans technical projects, data analysis, and working with founders on content and operations.</p>
+          <span class="journey-datestamp eyebrow">VESIT · 2024 — 2028 expected</span>
+        </div>
+        <Sculpture kind="journey" eager />
+      </div>
+    </section>
+    <section class="education" aria-labelledby="education-heading" data-reveal><div><span class="eyebrow">01 / Education</span><h2 id="education-heading">Still a student.<br/><em>Always learning.</em></h2></div><div><span class="eyebrow">VESIT · Mumbai</span><h3>Computer Science Engineering</h3><p>{profile.education.institution}</p><p class="education-dates">{profile.education.dates}<br/>Expected graduation: May 2028</p></div></section>
+    <section class="section journey-current" aria-label="Current work"><CurrentFocus /></section>
+    <section class="section" aria-labelledby="experience-heading"><div class="timeline-layout"><div class="timeline-heading"><span class="eyebrow">02 / Experience</span><h2 id="experience-heading">Learning<br/><em>by doing.</em></h2></div><ol class="timeline">{experience.map(item => <li data-reveal><time>{item.dates}</time><h3>{item.title}</h3><p class="organisation">{item.organisation} · {item.category}</p><p>{item.description}</p></li>)}</ol></div><AchievementFeature class="journey-award"/></section>
+  </div>
+</BaseLayout>

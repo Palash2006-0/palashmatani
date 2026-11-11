@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.astro/
+tmp/
+.env
+.env.*
+!.env.example
+
+# Local authoring sources and review material.
+PORTFOLIO_IMPLEMENTATION_PLAN.md
+PORTFOLIO_REVISION_PLAN_V2.md
+portfolio-content-seed.json
+docs/CONTENT_REVIEW.md
+docs/screenshots/
+docs/*layout-checks.json

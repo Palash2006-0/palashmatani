@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectFeature from '../../components/ProjectFeature.astro';
+import Sculpture from '../../components/Sculpture.astro';
+import { getProjects } from '../../lib/projects';
+const projects = await getProjects();
+---
+<BaseLayout theme="work" title="Projects | Palash Matani" description="Explore Palash Matani's software projects, experiments, and ongoing explorations in emerging technology.">
+  <div class="container">
+    <section class="page-intro work-intro"><div class="intro-composition"><div class="intro-copy"><span class="eyebrow">The work / Projects & explorations</span><h1>Ideas are a start.<br/><em>Building is<br/>the next step.</em></h1><p>A growing collection of projects shaped by curiosity, experimentation, and a willingness to learn what each problem needs.</p></div><Sculpture kind="exploration" eager /></div><div class="page-intro-bottom"><span>{String(projects.length).padStart(2,'0')} ongoing projects</span><span class="availability"><span class="status-dot" aria-hidden="true"></span> A work in progress, by design</span></div></section>
+    <section class="work-list" aria-label="Technical projects">{projects.map(project => <ProjectFeature project={project} detailed />)}</section>
+  </div>
+</BaseLayout>

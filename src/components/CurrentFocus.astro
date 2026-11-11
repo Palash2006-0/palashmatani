@@ -1,0 +1,10 @@
+---
+import { getProjects } from '../lib/projects';
+import { profile } from '../data/profile';
+import Arrow from './Arrow.astro';
+const projects = (await getProjects()).filter(project => project.data.status === 'in-progress' && project.data.currentFocus);
+---
+<div class="current-grid">
+  <div class="current-heading"><span class="eyebrow">An ongoing practice</span><h2>On my desk,<br/><em>right now.</em></h2><p class="muted">Updated {profile.updatedAt}</p></div>
+  <div class="current-list">{projects.map(project => <a class="current-item" href={`/work/${project.id}/`}><div><h3>{project.data.name}</h3><p>{project.data.currentFocus}</p></div><Arrow /></a>)}</div>
+</div>

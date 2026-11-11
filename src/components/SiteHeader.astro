@@ -1,0 +1,44 @@
+---
+import { profile } from '../data/profile';
+import Arrow from './Arrow.astro';
+const path = Astro.url.pathname;
+const links = [{ label: 'Home', href: '/' }, { label: 'Work', href: '/work/' }, { label: 'Journey', href: '/journey/' }, { label: 'Playground', href: '/playground/' }];
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="wordmark" href="/" aria-label="Palash Matani home">palash matani<span aria-hidden="true">.</span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="primary-navigation">Menu <span aria-hidden="true">+</span></button>
+    <nav id="primary-navigation" aria-label="Main navigation">
+      {links.map(({ href, label }) => <a href={href} aria-current={(href === '/' ? path === '/' : path.startsWith(href)) ? 'page' : undefined}>{label}</a>)}
+      {profile.resume && <a href={profile.resume}>Resume</a>}
+      <a class="nav-contact" href="/#contact">Let's talk <Arrow /></a>
+    </nav>
+  </div>
+</header>
+<script>
+  const button = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('primary-navigation');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  if (header) {
+    const sizeHeader = () => document.documentElement.style.setProperty('--header-height', `${header.getBoundingClientRect().height}px`);
+    new ResizeObserver(sizeHeader).observe(header);
+    sizeHeader();
+  }
+  if (button && nav) {
+    document.documentElement.classList.add('nav-enhanced');
+    const close = () => { button.setAttribute('aria-expanded', 'false'); nav.classList.remove('is-open'); };
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      button.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+    });
+    nav.addEventListener('click', (event) => { if ((event.target as HTMLElement).closest('a')) close(); });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') { close(); button.focus(); }
+    });
+    window.matchMedia('(min-width: 900px)').addEventListener('change', close);
+  }
+  document.querySelector<HTMLAnchorElement>('.skip-link')?.addEventListener('click', () => {
+    document.getElementById('main')?.focus({ preventScroll: true });
+  });
+</script>

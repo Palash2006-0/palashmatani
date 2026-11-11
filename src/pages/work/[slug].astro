@@ -1,0 +1,45 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Arrow from '../../components/Arrow.astro';
+import { getProjects, statusLabels } from '../../lib/projects';
+import { projectMedia } from '../../data/media';
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({ params: { slug: project.id }, props: { project, next: projects[(i + 1) % projects.length] } }));
+}
+const { project, next } = Astro.props;
+const { Content } = await render(project);
+const p = project.data;
+const media = projectMedia[project.id];
+const updatedLabel = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(p.updatedAt));
+---
+<BaseLayout theme="work" title={`${p.name} — ${p.category} | Palash Matani`} description={p.summary}>
+  <article class="container">
+    <header class="case-hero">
+      <a class="breadcrumb" href="/work/">← Selected work <span aria-hidden="true">/</span> {p.name}</a>
+      <div class="case-title-line"><div><span class="eyebrow">{p.category}</span><h1>{p.name}</h1></div><span class="project-status"><span class="status-dot" aria-hidden="true"></span>{statusLabels[p.status]}</span></div>
+      <p class="case-summary">{p.summary}</p>
+      <div class="case-actions">{p.liveUrl && <a class="button" href={p.liveUrl} target="_blank" rel="noopener noreferrer">Open {p.name}{project.id === 'fler' ? ' demo' : ''} <Arrow /></a>}{p.repoUrl && <a class="text-link" href={p.repoUrl} target="_blank" rel="noopener noreferrer">View source <Arrow /></a>}{p.reportUrl && <a class="text-link" href={p.reportUrl}>Engineering report <Arrow /></a>}</div>
+      <div class="case-info-band"><span>{p.category}</span><span>{statusLabels[p.status]} · Updated {updatedLabel}</span></div>
+      {media && <figure><div class="case-hero-media"><Image src={media.image} alt={media.alt} widths={[480,800,1200]} sizes="(max-width: 639px) 90vw, 1120px" format="webp" quality={82} loading="eager" fetchpriority="high" /></div><figcaption class="case-caption">{media.caption}</figcaption></figure>}
+    </header>
+    <div class="case-layout">
+      <aside class="case-meta" aria-label="Project details">
+        <div class="meta-block"><span class="eyebrow">Project status</span><p>{statusLabels[p.status]}<br/>Updated {updatedLabel}</p></div>
+        {p.role && <div class="meta-block"><span class="eyebrow">My contribution</span><p>{p.role}</p></div>}
+        <div class="meta-block"><span class="eyebrow">Tools & technologies</span><ul class="stack-list">{p.stack.map(tool => <li>{tool}</li>)}</ul></div>
+        {p.collaborators && <div class="meta-block wide"><span class="eyebrow">Collaboration</span><p>{p.collaborators}</p></div>}
+        {p.note && <div class="meta-block wide"><span class="eyebrow">Project context</span><p>{p.note}</p></div>}
+      </aside>
+      <div>
+        <div class="case-prose"><Content /></div>
+        {p.architecture.length > 0 && <figure class="architecture"><figcaption class="eyebrow">System at a glance</figcaption><ol class="architecture-steps">{p.architecture.map((step,i) => <li><span>0{i+1}</span>{step}</li>)}</ol>{p.architectureNote && <p class="case-caption">{p.architectureNote}</p>}</figure>}
+        {media?.secondary && <figure class="case-extra-image"><Image src={media.secondary.image} alt={media.secondary.alt} widths={[480,800,1000]} sizes="(max-width: 639px) 90vw, 800px" format="webp" quality={80} loading="lazy"/><figcaption class="case-caption">{media.secondary.caption}</figcaption></figure>}
+        {p.metrics.length > 0 && <section class="case-prose" aria-label="Project evaluation"><h2>Evaluation</h2>{p.metrics.map(metric => <p><strong>{metric.label}: {metric.value}.</strong> {metric.context} <a href={metric.evidenceUrl}>Supporting evidence</a></p>)}</section>}
+      </div>
+    </div>
+    {next.id !== project.id && <a class="next-project" href={`/work/${next.id}/`}><div><span class="eyebrow">Next exploration</span><h2>{next.data.name}</h2></div><Arrow /></a>}
+  </article>
+</BaseLayout>

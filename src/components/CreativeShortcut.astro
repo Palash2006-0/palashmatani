@@ -1,0 +1,121 @@
+---
+import Arrow from './Arrow.astro';
+---
+<div class="creative-shortcut-wrap" hidden>
+  <svg class="creative-shortcut-pointer" viewBox="0 0 200 140" fill="none" aria-hidden="true" focusable="false">
+    <g class="pointer-desktop">
+      <path class="pointer-outline" d="M16 12C6 96 80 125 181 100M160 84l21 16-26 13" />
+      <path d="M16 12C6 96 80 125 181 100M160 84l21 16-26 13" />
+    </g>
+    <g class="pointer-mobile">
+      <path class="pointer-outline" d="M20 18C100 0 164 45 140 118M123 97l17 21 23-16" />
+      <path d="M20 18C100 0 164 45 140 118M123 97l17 21 23-16" />
+    </g>
+  </svg>
+<aside class="creative-shortcut" aria-labelledby="creative-shortcut-heading">
+  <button class="creative-shortcut-close" type="button" aria-label="Dismiss creative work shortcut" data-dismiss-creative>×</button>
+  <span class="eyebrow">Beyond the code</span>
+  <h2 id="creative-shortcut-heading">Here for the<br/><em>creative work?</em></h2>
+  <p>Video editing, visual direction, and generative media. Head straight to my creative side.</p>
+  <a class="button" href="/playground/">Explore the Playground <Arrow /></a>
+  <button class="creative-shortcut-stay" type="button" data-dismiss-creative>I'll explore here first</button>
+</aside>
+</div>
+
+<script>
+  const shortcut = document.querySelector<HTMLElement>('.creative-shortcut-wrap');
+  const sessionKey = 'palash-creative-shortcut-seen';
+  if (shortcut) {
+    let seen = false;
+    try { seen = sessionStorage.getItem(sessionKey) === 'true'; } catch { /* Storage may be disabled. */ }
+    if (!seen) {
+      shortcut.hidden = false;
+      try { sessionStorage.setItem(sessionKey, 'true'); } catch { /* The shortcut still works without storage. */ }
+    }
+    const dismiss = () => {
+      const restoreFocus = shortcut.contains(document.activeElement);
+      shortcut.hidden = true;
+      if (restoreFocus) document.querySelector<HTMLAnchorElement>('.hero-actions a')?.focus({ preventScroll: true });
+    };
+    shortcut.querySelectorAll('[data-dismiss-creative]').forEach(button => button.addEventListener('click', dismiss));
+    // Capture the menu state before its own Escape handler closes it.
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !shortcut.hidden && document.querySelector('.menu-toggle')?.getAttribute('aria-expanded') !== 'true') dismiss();
+    }, { capture: true });
+  }
+</script>
+
+<style>
+  .creative-shortcut-wrap {
+    position:fixed;
+    z-index:40;
+    right:28px;
+    bottom:28px;
+    width:360px;
+    max-width:calc(100% - 40px);
+    --shortcut-highlight-duration:1500ms;
+    --shortcut-entrance-duration:220ms;
+  }
+  .creative-shortcut-wrap[hidden] { display:none }
+  .creative-shortcut-pointer {
+    position:absolute;
+    right:calc(100% + 12px);
+    top:8px;
+    width:180px;
+    height:126px;
+    pointer-events:none;
+    opacity:0;
+    stroke:var(--lime);
+    stroke-width:5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    animation:shortcut-pointer var(--shortcut-highlight-duration) ease-out var(--shortcut-entrance-duration) both;
+  }
+  .creative-shortcut-pointer .pointer-outline { stroke:var(--teal); stroke-width:9 }
+  .pointer-mobile { display:none }
+  .creative-shortcut {
+    position:relative;
+    max-height:calc(100dvh - var(--header-height) - 40px);
+    overflow-y:auto;
+    padding:30px;
+    border:1px solid #0b304833;
+    border-top:4px solid var(--lime);
+    border-radius:6px;
+    background:var(--pearl);
+    color:var(--teal);
+    box-shadow:0 12px 45px #03040726;
+    --accent:var(--teal);
+    --on-accent:var(--pearl);
+    --focus:var(--teal);
+    animation:shortcut-in var(--shortcut-entrance-duration) var(--ease) both, shortcut-highlight var(--shortcut-highlight-duration) ease-out var(--shortcut-entrance-duration);
+  }
+  .creative-shortcut .eyebrow { display:block; padding-right:28px; font-size:10px }
+  .creative-shortcut h2 { font-size:36px; margin-top:18px }
+  .creative-shortcut p { font-size:16px; line-height:1.7; margin-top:16px }
+  .creative-shortcut .button { width:100%; margin-top:22px; gap:16px }
+  .creative-shortcut .button .arrow { color:var(--lime) }
+  .creative-shortcut-close {
+    position:absolute; right:8px; top:6px; width:44px; height:44px;
+    display:grid; place-items:center; background:none; border:0;
+    color:inherit; cursor:pointer; font-size:26px; line-height:1;
+  }
+  .creative-shortcut-stay {
+    display:block; width:100%; min-height:44px; margin-top:8px;
+    padding:8px; background:none; border:0; color:inherit;
+    font-size:13px; text-decoration:underline; text-underline-offset:4px; cursor:pointer;
+  }
+  @keyframes shortcut-in { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
+  @keyframes shortcut-highlight {
+    0%,100% { box-shadow:0 0 0 0 #b9f12f00,0 12px 45px #03040726 }
+    15%,65% { box-shadow:0 0 0 3px var(--lime),0 0 32px #b9f12f55,0 12px 45px #03040726 }
+  }
+  @keyframes shortcut-pointer { 0%,100% { opacity:0 } 15%,65% { opacity:1 } }
+  @media(max-width:639px) {
+    .creative-shortcut-wrap { right:16px; bottom:16px; width:calc(100% - 32px); max-width:none }
+    .creative-shortcut { padding:24px; max-height:calc(100dvh - var(--header-height) - 160px) }
+    .creative-shortcut-pointer { right:auto; left:16px; top:auto; bottom:calc(100% + 4px); width:150px; height:105px }
+    .pointer-desktop { display:none }
+    .pointer-mobile { display:initial }
+    .creative-shortcut h2 { font-size:32px; margin-top:14px }
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+import Arrow from './Arrow.astro';
+import { profile } from '../data/profile';
+---
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="contact-top"><span class="eyebrow">A conversation is a good start</span><span class="availability"><span class="status-dot" aria-hidden="true"></span> Open to software / AI internships</span></div>
+    <div class="contact-heading"><h2>Let's build<br/>something <em>useful.</em></h2><a class="contact-arrow" href={`mailto:${profile.email}`} aria-label="Email Palash Matani"><Arrow /></a></div>
+    <a class="email-link" href={`mailto:${profile.email}`}>{profile.email}</a>
+    <div class="footer-bottom"><span>© {new Date().getFullYear()} Palash Matani</span><span class="footer-location">Mumbai, India</span><div class="footer-links"><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <Arrow /></a>{profile.github && <a href={profile.github}>GitHub <Arrow /></a>}{profile.resume && <a href={profile.resume}>Resume <Arrow /></a>}<a href="#top">Back to top ↑</a></div></div>
+  </div>
+</footer>

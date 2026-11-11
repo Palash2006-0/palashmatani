@@ -1,0 +1,6 @@
+---
+import { achievements } from '../data/achievements';
+import Arrow from './Arrow.astro';
+interface Props { class?: string; }
+---
+{achievements.map(item => <a class:list={['award',Astro.props.class]} href={item.href}><span class="award-mark" aria-hidden="true">{item.mark}</span><div class="award-copy"><h3>{item.title}</h3><p>{item.description}</p></div><Arrow /></a>)}

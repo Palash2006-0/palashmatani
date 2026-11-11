@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Arrow from '../components/Arrow.astro';
+import Sculpture from '../components/Sculpture.astro';
+import { creativeItems } from '../data/creative';
+import { profile } from '../data/profile';
+const practices = [
+  { title: 'Moving images.', text: 'Video editing, scripting, and storyboarding. Working through the rhythm of a sequence, from the initial idea to the final cut.', tools: 'DaVinci Resolve · Video editing · Storyboarding' },
+  { title: 'Generative experiments.', text: 'Exploring generative media as part of a creative workflow, with an interest in visual direction and the process behind the output.', tools: 'GenAI workflows · Visual direction · Ideation' },
+  { title: 'Visual thinking.', text: 'Bringing structure to an idea through layout, visual communication, and content strategy.', tools: 'Figma · Canva · Content strategy' },
+];
+---
+<BaseLayout theme="playground" title="Playground — Creative Practice | Palash Matani" description="The creative side of Palash Matani: video editing, visual direction, storyboarding, and generative media experiments.">
+  <div class="container">
+    <section class="page-intro play-intro"><div class="intro-composition"><div class="intro-copy"><span class="eyebrow">The playground / A creative practice</span><h1>Make room<br/>for <em>the unexpected.</em></h1><p>Some ideas begin in an editor. Others begin on a storyboard. A space for video, visual direction, and generative experiments.</p><a class="button" href="#creative-practices">Explore the practice <Arrow direction="down" /></a></div><Sculpture kind="expression" eager /></div></section>
+    {creativeItems.length > 0 && <section class="creative-grid" aria-label="Creative work">{creativeItems.map(item => <article class="creative-item"><img src={item.image} alt={item.alt} width="1200" height="900" loading="lazy"/>{item.video && <video controls preload="none" poster={item.image} aria-label={item.title}><source src={item.video}/>{item.captions && <track kind="captions" src={item.captions} srclang="en" label="English" default/>}Your browser does not support this video.</video>}<h2>{item.title}</h2><span class="eyebrow">{item.category} · {item.role}</span><p>{item.caption}</p><p class="practice-tools">{item.tools.join(' · ')}</p>{item.externalUrl && <a class="text-link" href={item.externalUrl}>View creative work <Arrow /></a>}</article>)}</section>}
+    <section class="creative-practices" id="creative-practices" aria-label="Creative disciplines">{practices.map((item,index) => <article class="practice-row" data-reveal><span>0{index+1}</span><h2>{item.title}</h2><div><p>{item.text}</p><span class="practice-tools">{item.tools}</span></div></article>)}</section>
+    <div class="play-note"><p>I bring this creative perspective into my technical work, too — thinking about how an idea is experienced as well as how it works.</p><a class="button" href={`mailto:${profile.email}`}>Start a conversation <Arrow /></a></div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,28 @@
+@keyframes editorial-reveal {
+  from {
+    opacity:.15;
+    transform:translateY(16px)
+  }
+  to {
+    opacity:1;
+    transform:translateY(0)
+  }
+}
+.reveal-enter {
+  animation:editorial-reveal 420ms var(--ease) both
+}
+.contact-arrow .arrow {
+  transition:transform 180ms var(--ease)
+}
+@media(prefers-reduced-motion:reduce) {
+  html {
+    scroll-behavior:auto
+  }
+  *,*:before,*:after {
+    animation:none!important;
+    transition:none!important
+  }
+  .project-media img,.button:hover {
+    transform:none!important
+  }
+}

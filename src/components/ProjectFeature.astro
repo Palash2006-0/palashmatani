@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Arrow from './Arrow.astro';
+import { projectMedia } from '../data/media';
+import { statusLabels } from '../lib/projects';
+interface Props { project: CollectionEntry<'projects'>; detailed?: boolean; }
+const { project, detailed = false } = Astro.props;
+const p = project.data;
+const media = projectMedia[project.id];
+const href = `/work/${project.id}/`;
+---
+<article class="project-feature" data-project={project.id} data-reveal>
+  <a class="project-media" href={href} aria-label={`View ${p.name} case study`}>
+    {media ? <Image src={media.image} alt={media.alt} widths={[400,640,1000]} sizes={detailed ? '(max-width: 767px) 90vw, 55vw' : '(max-width: 1023px) 90vw, 30vw'} format="webp" quality={82} loading="lazy" /> : <span class="project-fallback">{p.name}</span>}
+  </a>
+  <div class="project-details">
+    <div class="project-topline"><span class="project-category">{p.category}</span><span class="project-status"><span class="status-dot" aria-hidden="true"></span>{statusLabels[p.status]}</span></div>
+    <h3><a href={href}>{p.name}</a><Arrow /></h3>
+    <p>{p.summary}</p>
+    <div class="tags">{p.tags.slice(0,3).map(tag => <span class="tag">{tag}</span>)}</div>
+    {detailed && <a class="text-link" href={href}>View case study <Arrow /></a>}
+  </div>
+</article>

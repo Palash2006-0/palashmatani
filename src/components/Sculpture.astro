@@ -1,0 +1,14 @@
+---
+import { Image } from 'astro:assets';
+import possibility from '../assets/art/possibility.webp';
+import exploration from '../assets/art/exploration.webp';
+import expression from '../assets/art/expression.webp';
+import journey from '../assets/art/journey.webp';
+interface Props { kind?: 'possibility' | 'exploration' | 'expression' | 'journey'; eager?: boolean; }
+const { kind = 'possibility', eager = false } = Astro.props;
+const source = { possibility, exploration, expression, journey }[kind];
+---
+<div class:list={['sculpture', `sculpture-${kind}`]} aria-hidden="true">
+  <div class="sculpture-halo"></div>
+  <Image src={source} alt="" widths={[400,640,1000]} sizes="(max-width: 639px) 90vw, (max-width: 1023px) 60vw, 600px" format="webp" quality={85} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} />
+</div>
