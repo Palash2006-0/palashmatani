@@ -19,6 +19,7 @@ main:focus { outline:none }
 .arrow { flex-shrink:0; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; vertical-align:middle }
 .skip-link { position:fixed; z-index:100; left:20px; top:-100px; background:var(--pearl); color:var(--teal); padding:10px 16px }
 .theme-home .skip-link { background:var(--ice); color:var(--aubergine) }
+.theme-work .skip-link { background:var(--cobalt); color:var(--black) }
 .skip-link:focus { top:12px }
 /* Stable, opaque navigation in both scroll directions. */
 .site-header { position:sticky; top:0; z-index:50; background:var(--header-bg); color:var(--header-text); border-bottom:1px solid color-mix(in srgb,var(--header-text) 15%,transparent); --focus:var(--header-text) }
@@ -193,7 +194,7 @@ main:focus { outline:none }
 .case-title-line .project-status { color:var(--accent); padding-bottom:6px; font-size:12px }
 .case-summary { font-size:18px; max-width:710px; margin-top:28px; color:var(--muted-text) }
 .case-actions { display:flex; gap:24px; flex-wrap:wrap; margin-top:28px }
-.case-info-band { display:flex; justify-content:space-between; gap:20px; background:var(--cobalt); color:var(--pearl); padding:18px 24px; margin-top:34px; font-size:12px }
+.case-info-band { display:flex; justify-content:space-between; gap:20px; background:var(--cobalt); color:var(--black); font-weight:600; padding:18px 24px; margin-top:34px; font-size:12px }
 .case-hero-media { margin-top:24px; padding:40px; background:var(--surface); border-radius:5px }
 .case-hero-media img { aspect-ratio:1.85; object-fit:cover; object-position:top; border-radius:3px }
 .case-caption { font-size:12px; color:var(--muted-text); margin-top:12px; line-height:1.7 }
@@ -206,15 +207,15 @@ main:focus { outline:none }
 .case-prose h2 { font-family:var(--font-body); font-size:25px; line-height:1.3; margin:48px 0 18px }
 .case-prose h2:first-child { margin-top:0 }
 .case-prose h3 { font-size:18px; margin:30px 0 12px }
-.case-prose p,.case-prose li { font-size:17px; line-height:1.9; color:#bdc4ce }
+.case-prose p,.case-prose li { font-size:17px; line-height:1.9; color:var(--text) }
 .case-prose p+p { margin-top:18px }
 .case-prose ul { padding-left:20px }
 .case-prose li+li { margin-top:9px }
-.case-prose strong { font-weight:650; color:var(--pearl) }
+.case-prose strong { font-weight:650; color:var(--accent) }
 .case-prose a { color:var(--accent); text-decoration:underline; text-underline-offset:4px; overflow-wrap:anywhere }
-.case-prose code { font-size:13px; background:#152344; padding:3px 6px; border-radius:3px; color:var(--pearl) }
+.case-prose code { font-size:13px; background:#0c1a30; padding:3px 6px; border-radius:3px; color:var(--accent); border:1px solid var(--line) }
 .case-prose details { border-block:1px solid var(--line); padding:20px 0; margin-top:28px }
-.case-prose summary { cursor:pointer; font-size:15px; color:var(--pearl) }
+.case-prose summary { cursor:pointer; font-size:15px; color:var(--text) }
 .case-prose details p { margin-top:18px }
 .architecture { border-block:1px solid var(--line); padding-block:26px; margin-top:28px }
 .architecture .eyebrow { display:block; color:var(--muted-text); margin-bottom:20px }

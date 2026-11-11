@@ -21,10 +21,10 @@
   --header-bg:var(--ice); --header-text:var(--aubergine); --header-mark:var(--aubergine);
 }
 [data-theme=work] {
-  --page-bg:var(--black); --text:var(--pearl); --muted-text:#b5bbc6;
-  --line:#343840; --surface:var(--cobalt); --on-surface:var(--pearl);
+  --page-bg:var(--black); --text:var(--cobalt); --muted-text:var(--cobalt);
+  --line:#1558c94d; --surface:var(--cobalt); --on-surface:var(--black);
   --accent:var(--acid); --on-accent:var(--black); --focus:var(--acid);
-  --header-bg:var(--black); --header-mark:var(--acid); color-scheme:dark;
+  --header-bg:var(--black); --header-text:var(--cobalt); --header-mark:var(--acid); color-scheme:dark;
 }
 [data-theme=journey] {
   --page-bg:var(--sage); --text:var(--burgundy); --muted-text:#4d3430;
