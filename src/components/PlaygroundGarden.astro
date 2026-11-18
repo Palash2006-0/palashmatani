@@ -1,0 +1,894 @@
+---
+// Living Botanical Garden Canvas inspired by Type Garden
+// Procedurally grows stems, leaves, thorns, and blooming roses across 'palash matani'
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<div class="playground-garden-banner" data-garden-container>
+  <div class="garden-meta-bar">
+    <div class="garden-label">
+      <span class="garden-status-dot" aria-hidden="true"></span>
+      <span class="garden-title-text">Palash Matani</span>
+    </div>
+    <div class="garden-actions">
+      <button type="button" class="garden-btn" data-garden-rebloom title="Re-bloom the botanical garden">
+        <span>Re-bloom</span> <span class="garden-btn-icon" aria-hidden="true">↺</span>
+      </button>
+      <button type="button" class="garden-btn" data-garden-add-rose title="Sprout an extra rose blossom">
+        <span>+ Blossom</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="garden-canvas-wrap">
+    <canvas id="playground-garden-canvas" class="garden-canvas" aria-label="Living botanical garden spelling palash matani with blooming roses and vines"></canvas>
+    <div class="garden-hint-bar" aria-hidden="true">
+      <span class="hint-desktop">move cursor to lean · click anywhere to plant a rose</span>
+      <span class="hint-touch">tap anywhere to plant a rose</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .playground-garden-banner {
+    margin-top: 18px;
+    margin-bottom: 24px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(8px);
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .playground-garden-banner:hover {
+    border-color: var(--eggplant);
+    box-shadow: 0 12px 32px rgba(64, 8, 73, 0.08);
+  }
+
+  .garden-meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+  }
+
+  .garden-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+
+  .garden-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: inline-block;
+    animation: garden-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes garden-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+
+  .garden-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .garden-btn {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--eggplant);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    touch-action: manipulation;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .garden-btn:hover {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .garden-btn:active {
+    transform: translateY(0);
+  }
+
+  .garden-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: clamp(190px, 30vw, 310px);
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+
+  .garden-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .garden-hint-bar {
+    position: absolute;
+    bottom: 8px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--muted-text);
+    opacity: 0.72;
+    pointer-events: none;
+    letter-spacing: 0.05em;
+    user-select: none;
+    text-align: center;
+  }
+
+  .hint-touch { display: none; }
+  .hint-desktop { display: inline; }
+
+  @media (hover: none) and (pointer: coarse) {
+    .hint-touch { display: inline; }
+    .hint-desktop { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .playground-garden-banner {
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
+    .garden-meta-bar {
+      padding: 8px 12px;
+      font-size: 10px;
+    }
+    .garden-btn {
+      padding: 3px 9px;
+      font-size: 10px;
+    }
+    .garden-canvas-wrap {
+      height: clamp(180px, 46vw, 230px);
+    }
+    .garden-hint-bar {
+      font-size: 9px;
+      bottom: 5px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .garden-meta-bar {
+      padding: 6px 10px;
+      font-size: 9.5px;
+    }
+    .garden-btn {
+      padding: 2px 7px;
+      font-size: 9px;
+    }
+    .garden-canvas-wrap {
+      height: 175px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .garden-status-dot {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const canvas = document.getElementById('playground-garden-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const banner = canvas.closest('[data-garden-container]') as HTMLElement | null;
+    const rebloomBtn = banner?.querySelector('[data-garden-rebloom]') as HTMLButtonElement | null;
+    const addRoseBtn = banner?.querySelector('[data-garden-add-rose]') as HTMLButtonElement | null;
+
+    // Palette tuned for Playground (Orchid, Eggplant, Orange)
+    const PALETTE = {
+      text: '#400849',       // Deep Eggplant
+      stem: '#1b4332',       // Lush botanical pine green
+      thorn: '#163829',      // Deep thorn green
+      leaf: '#2d6a4f',       // Foliage green
+      leafVein: '#d4ff24',   // Electric lime vein
+      rose: '#ff5a0a',       // Vibrant Tangerine / Coral Orange
+      roseInner: '#ff7a36',  // Warm glowing coral
+      roseLine: '#fff0eb'    // Delicate petal edge
+    };
+
+    const TARGET_TEXT = 'palash matani';
+    const FONT_FAMILY = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
+
+    // Mathematical easings & PRNG
+    const spr = (t: number, k = 7, w = 16) => t <= 0 ? 0 : 1 - Math.exp(-t * k) * Math.cos(t * w);
+    const eo = (t: number) => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(1 - t, 3);
+    const rng = (seed: number) => {
+      let s = seed | 0;
+      return () => {
+        s = (s + 0x6D2B79F5) | 0;
+        let t = Math.imul(s ^ (s >>> 15), 1 | s);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    };
+
+    const at = (P: number[][], u: number): [number[], number] => {
+      const n = P.length;
+      const i = Math.min(n - 2, Math.max(1, Math.round(u * (n - 1))));
+      return [P[i], Math.atan2(P[i + 1][1] - P[i - 1][1], P[i + 1][0] - P[i - 1][0])];
+    };
+
+    const vine = (base: number[], dir: number, len: number, amp: number, waves: number, ph: number, bend: number, n = 36) => {
+      const P = [[base[0], base[1]]], step = len / n;
+      let x = base[0], y = base[1];
+      for (let i = 1; i <= n; i++) {
+        const u = i / n;
+        const a = dir + bend * u + amp * Math.sin(u * Math.PI * waves + ph) * Math.min(1, u * 3);
+        x += Math.cos(a) * step;
+        y += Math.sin(a) * step;
+        P.push([x, y]);
+      }
+      return P;
+    };
+
+    const curl = (P: number[][], sign: number, rad: number) => {
+      const n = P.length, e = P[n - 1];
+      const a = Math.atan2(e[1] - P[n - 2][1], e[0] - P[n - 2][0]);
+      const c = [e[0] - Math.sin(a) * sign * rad, e[1] + Math.cos(a) * sign * rad];
+      const a0 = Math.atan2(e[1] - c[1], e[0] - c[0]);
+      for (let i = 1; i <= 12; i++) {
+        const u = i / 12, t = a0 + sign * u * Math.PI * 1.6, rr = rad * (1 - 0.5 * u);
+        P.push([c[0] + Math.cos(t) * rr, c[1] + Math.sin(t) * rr]);
+      }
+      return P;
+    };
+
+    const weave = (r: () => number, startLayer: number) => {
+      const cuts: number[] = [];
+      const nc = 1 + Math.floor(r() * 2);
+      for (let i = 0; i < nc; i++) cuts.push(0.15 + r() * 0.7);
+      cuts.sort((a, b) => a - b);
+      const segs: { u0: number; u1: number; layer: number }[] = [];
+      let u0 = 0, layer = startLayer;
+      for (const c of cuts) {
+        if (c <= u0) continue;
+        segs.push({ u0, u1: c, layer });
+        if (r() < 0.3) u0 = Math.min(0.98, c + 0.02 + r() * 0.03);
+        else u0 = c;
+        layer = 1 - layer;
+      }
+      segs.push({ u0, u1: 1, layer });
+      return segs;
+    };
+
+    const layerAt = (segs: { u0: number; u1: number; layer: number }[], u: number) => {
+      for (const s of segs) if (u >= s.u0 && u <= s.u1) return s.layer;
+      return segs[segs.length - 1].layer;
+    };
+
+    const smoothPath = (c: CanvasRenderingContext2D, p: number[][], closed: boolean) => {
+      const n = p.length;
+      if (n < 2) return;
+      const m = (a: number[], b: number[]) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      if (closed) {
+        const s = m(p[n - 1], p[0]);
+        c.moveTo(s[0], s[1]);
+        for (let i = 0; i < n; i++) {
+          const q = m(p[i], p[(i + 1) % n]);
+          c.quadraticCurveTo(p[i][0], p[i][1], q[0], q[1]);
+        }
+        c.closePath();
+      } else {
+        c.moveTo(p[0][0], p[0][1]);
+        for (let i = 1; i < n - 1; i++) {
+          const q = m(p[i], p[i + 1]);
+          c.quadraticCurveTo(p[i][0], p[i][1], q[0], q[1]);
+        }
+        c.lineTo(p[n - 1][0], p[n - 1][1]);
+      }
+    };
+
+    // Garden State
+    let W = 0, H = 0, dpr = 1;
+    let seed = Math.floor(Math.random() * 99999);
+    let startTime = performance.now();
+    let mouse: [number, number] | null = null;
+    let isVisible = true;
+    let animId: number | null = null;
+    let extraRoses: { x: number; y: number; birth: number; R: number; rot: number; ph1: number; ph2: number }[] = [];
+
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = motionQuery.matches;
+
+    interface LetterElement {
+      t: 'stem' | 'leaf' | 'rose';
+      id: number;
+      pts?: number[][];
+      segs?: { u0: number; u1: number; layer: number }[];
+      d0: number;
+      dur?: number;
+      w?: number;
+      thorns?: { u: number; s: number }[];
+      x?: number;
+      y?: number;
+      a?: number;
+      L?: number;
+      bend?: number;
+      layer?: number;
+      R?: number;
+      rot?: number;
+      ph1?: number;
+      ph2?: number;
+      turns?: number;
+    }
+
+    interface LetterModel {
+      ch: string;
+      id: number;
+      x: number;
+      y: number;
+      w: number;
+      lean: [number, number];
+      els: LetterElement[];
+    }
+
+    let letters: LetterModel[] = [];
+    let baseS = 48;
+
+    const buildGarden = () => {
+      const r = rng(seed);
+      letters = [];
+      let uid = 1;
+
+      // Word parameters
+      const dens = 1.15;
+      const wordP = {
+        roseP: 0.38 + r() * 0.25,
+        leafy: (0.75 + r() * 0.7) * dens,
+        lean: (r() - 0.5) * 0.45,
+        curvy: 0.85 + r() * 0.5,
+        big: 0.95 + r() * 0.35,
+        bridgeP: 0.75
+      };
+
+      const growElement = (E: LetterElement[], nid: () => number, opt: { base?: number[]; pts?: number[]; dir?: number; len?: number; d0: number; tip?: 'rose' | 'leaf' | 'curl' | 'fan' | null; depth?: number }) => {
+        const tip = opt.tip || (r() < wordP.roseP ? 'rose' : r() < 0.5 ? 'fan' : r() < 0.7 ? 'leaf' : 'curl');
+        let P = opt.pts ? (opt.pts as unknown as number[][]) : vine(opt.base || [0, 0], opt.dir || -Math.PI / 2, opt.len || 0.75, (0.35 + r() * 0.4) * wordP.curvy, 1 + r() * 1.5, r() * 6.28, (r() - 0.5) * 1.1, 36);
+        if (tip === 'curl') P = curl(P, r() < 0.5 ? -1 : 1, 0.05 + r() * 0.05);
+
+        const segs = weave(r, r() < 0.5 ? 0 : 1);
+        const dur = Math.max(300, (opt.len || 0.75) * 600);
+        const thorns: { u: number; s: number }[] = [];
+        const nt = Math.floor(r() * 2.2);
+        for (let i = 0; i < nt; i++) thorns.push({ u: 0.18 + r() * 0.62, s: r() < 0.5 ? -1 : 1 });
+
+        E.push({ t: 'stem', id: nid(), pts: P, segs, d0: opt.d0, dur, w: opt.depth ? 0.82 : 1, thorns });
+
+        const nl = Math.floor(r() * 2.5 * wordP.leafy);
+        let sd = r() < 0.5 ? -1 : 1;
+        for (let i = 0; i < nl; i++) {
+          const u = 0.22 + r() * 0.65;
+          const [q, a] = at(P, u);
+          sd = -sd;
+          E.push({
+            t: 'leaf',
+            id: nid(),
+            x: q[0],
+            y: q[1],
+            a: a + sd * (0.55 + r() * 0.5),
+            L: (0.14 + r() * 0.18) * (opt.depth ? 0.8 : 1),
+            bend: (r() - 0.5) * 1.1,
+            layer: layerAt(segs, u),
+            d0: opt.d0 + dur * u
+          });
+        }
+
+        const [tp, ta] = at(P, 1);
+        const td = opt.d0 + dur * 0.8;
+        const tl = layerAt(segs, 1);
+
+        if (tip === 'rose') {
+          const R = (0.13 + r() * 0.14) * wordP.big * (opt.depth ? 0.8 : 1);
+          E.push({
+            t: 'rose',
+            id: nid(),
+            x: tp[0],
+            y: tp[1],
+            R,
+            rot: (r() - 0.5) * 1.1,
+            ph1: r() * 6.28,
+            ph2: r() * 6.28,
+            turns: 1.8 + r() * 0.8,
+            layer: r() < 0.6 ? 1 : tl,
+            d0: td
+          });
+        } else if (tip === 'fan') {
+          for (let j = 0; j < 2; j++) {
+            E.push({
+              t: 'leaf',
+              id: nid(),
+              x: tp[0],
+              y: tp[1],
+              a: ta + (j - 0.5) * 0.6,
+              L: 0.18 + r() * 0.18,
+              bend: (j - 0.5) * 0.7,
+              layer: tl,
+              d0: td + j * 50
+            });
+          }
+        } else if (tip === 'leaf') {
+          E.push({
+            t: 'leaf',
+            id: nid(),
+            x: tp[0],
+            y: tp[1],
+            a: ta + (r() - 0.5) * 0.3,
+            L: 0.16 + r() * 0.15,
+            bend: (r() - 0.5),
+            layer: tl,
+            d0: td
+          });
+        }
+      };
+
+      for (let i = 0; i < TARGET_TEXT.length; i++) {
+        const ch = TARGET_TEXT[i];
+        if (ch === ' ') {
+          letters.push({ ch: ' ', id: uid++, x: 0, y: 0, w: 0, lean: [0, 0], els: [] });
+          continue;
+        }
+
+        const els: LetterElement[] = [];
+        let k0 = 0;
+        const nid = () => uid * 1000 + (k0++);
+
+        // Upward vine
+        growElement(els, nid, {
+          base: [(r() - 0.5) * 0.35, -r() * 0.3],
+          dir: -Math.PI / 2 + wordP.lean * 0.5 + (r() - 0.5) * 0.6,
+          len: 0.55 + r() * 0.45,
+          d0: 60 + i * 90,
+          tip: (i === 0 || i === 7 || r() < 0.45) ? 'rose' : null
+        });
+
+        // Downward or side vine
+        if (r() < 0.55) {
+          growElement(els, nid, {
+            base: [(r() - 0.5) * 0.3, -0.05 - r() * 0.3],
+            dir: Math.PI / 2 + (r() - 0.5) * 0.8,
+            len: 0.35 + r() * 0.3,
+            d0: 160 + i * 80
+          });
+        }
+
+        letters.push({
+          ch,
+          id: uid++,
+          x: 0,
+          y: 0,
+          w: 0,
+          lean: [0, 0],
+          els
+        });
+      }
+    };
+
+    const layout = () => {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      // Cap DPR to 2 to prevent excessive fill-rate drain on ultra-high-res mobile screens
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = rect.width;
+      H = rect.height;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Measure letters with responsive scaling
+      baseS = Math.max(18, Math.min(W * 0.076, H * 0.42));
+      ctx.font = `700 ${baseS}px ${FONT_FAMILY}`;
+
+      let totalWidth = 0;
+      letters.forEach(l => {
+        if (l.ch === ' ') {
+          l.w = baseS * 0.45;
+        } else {
+          l.w = ctx.measureText(l.ch).width;
+        }
+        totalWidth += l.w;
+      });
+
+      // Fit inside 88% width
+      const maxW = W * 0.88;
+      if (totalWidth > maxW) {
+        const scale = maxW / totalWidth;
+        baseS *= scale;
+        ctx.font = `700 ${baseS}px ${FONT_FAMILY}`;
+        totalWidth = 0;
+        letters.forEach(l => {
+          l.w = l.ch === ' ' ? baseS * 0.45 : ctx.measureText(l.ch).width;
+          totalWidth += l.w;
+        });
+      }
+
+      let curX = (W - totalWidth) / 2;
+      const baselineY = H * 0.57;
+
+      letters.forEach(l => {
+        l.x = curX + l.w / 2;
+        l.y = baselineY;
+        curX += l.w;
+      });
+    };
+
+    // Render components
+    const strokeRange = (P: number[][], a: number, b: number, col: string, w: number) => {
+      const n = P.length - 1, ia = a * n, ib = b * n;
+      const lerp = (t: number) => {
+        const i = Math.min(n - 1, Math.floor(t)), f = t - i;
+        return [P[i][0] + (P[i + 1][0] - P[i][0]) * f, P[i][1] + (P[i + 1][1] - P[i][1]) * f];
+      };
+      const pts = [lerp(ia)];
+      for (let i = Math.floor(ia) + 1; i < ib; i++) pts.push(P[i]);
+      pts.push(lerp(ib));
+      if (pts.length >= 2) {
+        ctx.beginPath();
+        smoothPath(ctx, pts, false);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = w;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      }
+    };
+
+    const drawThorn = (P: number[][], u: number, s: number, S: number) => {
+      const [p, a] = at(P, u), d = a + s * 2.3, L = S * 0.048;
+      ctx.beginPath();
+      ctx.moveTo(p[0], p[1]);
+      ctx.lineTo(p[0] + Math.cos(d) * L, p[1] + Math.sin(d) * L);
+      ctx.strokeStyle = PALETTE.thorn;
+      ctx.lineWidth = S * 0.024;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    };
+
+    const drawLeaf = (bx: number, by: number, a: number, L: number, bend: number) => {
+      if (L < 1) return;
+      const ca = Math.cos(a), sa = Math.sin(a), px = -sa, py = ca;
+      const ax = (u: number) => {
+        const b = Math.sin(Math.PI * u) * bend * 0.15 * L;
+        return [bx + ca * u * L + px * b, by + sa * u * L + py * b];
+      };
+      const hw = (u: number) => L * 0.18 * Math.sin(Math.PI * Math.pow(u, 0.8));
+      const N = 10, s1: number[][] = [], s2: number[][] = [];
+      for (let i = 0; i <= N; i++) {
+        const u = i / N, c = ax(u), w = hw(u);
+        s1.push([c[0] + px * w, c[1] + py * w]);
+        s2.push([c[0] - px * w, c[1] - py * w]);
+      }
+      const tip = ax(1), base = ax(0);
+      ctx.beginPath();
+      smoothPath(ctx, [base, ...s1.slice(1, N), tip, tip, ...s2.slice(1, N).reverse(), base], true);
+      ctx.fillStyle = PALETTE.leaf;
+      ctx.fill();
+
+      if (L > 8) {
+        const v: number[][] = [];
+        for (let i = 0; i <= 6; i++) v.push(ax(0.1 + 0.7 * i / 6));
+        ctx.beginPath();
+        smoothPath(ctx, v, false);
+        ctx.strokeStyle = PALETTE.leafVein;
+        ctx.lineWidth = Math.max(0.75, L * 0.035);
+        ctx.stroke();
+      }
+    };
+
+    const drawRose = (cx: number, cy: number, R: number, rot: number, e: { ph1?: number; ph2?: number; turns?: number }, age: number) => {
+      const cr = Math.cos(rot), sr = Math.sin(rot);
+      const T = (x: number, y: number) => [cx + x * cr - y * sr, cy + x * sr + y * cr];
+
+      const Petals = [
+        [0, -0.36, 0.56, 0.54, 0],
+        [-0.5, -0.06, 0.6, 0.6, -0.35],
+        [0.52, -0.06, 0.6, 0.6, 0.35],
+        [-0.42, 0.3, 0.62, 0.48, 0.2],
+        [0.47, 0.3, 0.62, 0.48, -0.2],
+        [0.05, 0.42, 0.56, 0.38, 0]
+      ];
+      const lw = Math.max(0.8, R * 0.045), st = 80;
+
+      Petals.forEach((q, i) => {
+        const s = spr((age - i * st) / 1000, 8, 14);
+        if (s <= 0.001) return;
+        const open = (1 - Math.min(1, s)) * (q[0] < 0 ? 0.5 : -0.5);
+        const ang = q[4] + open, ca = Math.cos(ang), sa = Math.sin(ang);
+
+        const pt = (th: number) => {
+          const rr = 1 + 0.08 * Math.sin(3 * th + (e.ph1 || 0) + i) + 0.04 * Math.sin(5 * th + (e.ph2 || 0));
+          const lx = Math.cos(th) * q[2] * rr, ly = Math.sin(th) * q[3] * rr;
+          const px = q[0] + lx * ca - ly * sa, py = q[1] + lx * sa + ly * ca;
+          return T(px * s * R, (0.45 + (py - 0.45) * s) * R);
+        };
+
+        const pts: number[][] = [];
+        for (let k = 0; k < 22; k++) pts.push(pt(k / 22 * Math.PI * 2));
+        ctx.beginPath();
+        smoothPath(ctx, pts, true);
+        ctx.fillStyle = i < 3 ? PALETTE.rose : PALETTE.roseInner;
+        ctx.fill();
+
+        if (R >= 10 && s > 0.45) {
+          const arc: number[][] = [];
+          for (let k = 0; k <= 10; k++) arc.push(pt(Math.PI * (1.18 + 0.64 * k / 10)));
+          strokeRange(arc, 0, Math.min(1, (s - 0.45) / 0.5), PALETTE.roseLine, lw * 0.8);
+        }
+      });
+
+      // Rose core spiral
+      const fr = eo((age - Petals.length * st - 80) / 480);
+      if (fr > 0 && R > 4) {
+        const sp: number[][] = [];
+        const turns = Math.min(e.turns || 2, 2.2);
+        for (let i = 0; i <= 40; i++) {
+          const u = i / 40, th = (e.ph1 || 0) + u * turns * Math.PI * 2, rr = R * (0.08 + 0.55 * u);
+          sp.push(T(Math.cos(th) * rr * 1.05, Math.sin(th) * rr * 0.72 - 0.1 * R));
+        }
+        strokeRange(sp, 0, fr, PALETTE.roseLine, lw);
+      }
+    };
+
+    // Shared draw routine
+    const drawScene = (elapsed: number, ph: number, staticMode = false) => {
+      ctx.clearRect(0, 0, W, H);
+      const S = baseS;
+
+      if (!staticMode) {
+        letters.forEach(l => {
+          let tx = 0, ty = 0;
+          if (mouse) {
+            const dx = mouse[0] - l.x, dy = mouse[1] - l.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 260 && dist > 1) {
+              const pull = (1 - dist / 260);
+              tx = (dx / dist) * pull * 14;
+              ty = (dy / dist) * pull * 8;
+            }
+          }
+          l.lean[0] += (tx - l.lean[0]) * 0.08;
+          l.lean[1] += (ty - l.lean[1]) * 0.08;
+        });
+      }
+
+      const getWarped = (lx: number, ly: number, ox: number, oy: number, lean: [number, number]) => {
+        if (staticMode) return [lx + ox, ly + oy];
+        const hh = Math.max(0, (ly - oy) / S);
+        const swayX = Math.sin(ph + lx * 0.005 + hh) * S * 0.02 * hh;
+        const swayY = Math.cos(ph + lx * 0.003) * S * 0.007 * hh;
+        return [
+          lx + ox + lean[0] * hh * 0.6 + swayX,
+          ly + oy + lean[1] * hh * 0.3 + swayY
+        ];
+      };
+
+      const drawPass = (layer: number) => {
+        letters.forEach(l => {
+          if (l.ch === ' ') return;
+          l.els.forEach(e => {
+            const age = staticMode ? 99999 : elapsed - e.d0;
+            if (age <= 0) return;
+
+            if (e.t === 'stem' && e.pts && e.segs) {
+              const fr = staticMode ? 1 : eo(age / (e.dur || 500));
+              if (fr <= 0) return;
+              const mapped = e.pts.map(p => getWarped(l.x, l.y, p[0] * S, p[1] * S, l.lean));
+
+              e.segs.forEach(sg => {
+                if (sg.layer !== layer) return;
+                const b = Math.min(sg.u1, fr);
+                if (b <= sg.u0) return;
+                strokeRange(mapped, sg.u0, b, PALETTE.stem, S * 0.022 * (e.w || 1));
+              });
+
+              if (e.thorns) {
+                e.thorns.forEach(th => {
+                  if (fr > th.u && layerAt(e.segs!, th.u) === layer) {
+                    drawThorn(mapped, th.u, th.s, S);
+                  }
+                });
+              }
+            } else if (e.layer === layer) {
+              const [px, py] = getWarped(l.x, l.y, (e.x || 0) * S, (e.y || 0) * S, l.lean);
+              if (e.t === 'leaf') {
+                const sc = staticMode ? 1 : spr(age / 900, 7, 15);
+                if (sc > 0.001) drawLeaf(px, py, (e.a || 0) + (staticMode ? 0 : Math.sin(ph + e.id) * 0.08), (e.L || 0.16) * S * sc, e.bend || 0);
+              } else if (e.t === 'rose') {
+                drawRose(px, py, (e.R || 0.16) * S, (e.rot || 0) + (staticMode ? 0 : Math.sin(ph + e.id) * 0.06), e, age);
+              }
+            }
+          });
+        });
+      };
+
+      drawPass(0);
+
+      ctx.font = `700 ${S}px ${FONT_FAMILY}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = PALETTE.text;
+      letters.forEach(l => {
+        if (l.ch !== ' ') {
+          ctx.fillText(l.ch, l.x + l.lean[0] * 0.1, l.y + l.lean[1] * 0.05);
+        }
+      });
+
+      drawPass(1);
+
+      extraRoses.forEach(r => {
+        const roseAge = staticMode ? 99999 : performance.now() - r.birth;
+        drawRose(r.x, r.y, r.R, r.rot + (staticMode ? 0 : Math.sin(ph) * 0.06), r, roseAge);
+      });
+    };
+
+    const renderStatic = () => {
+      drawScene(99999, 0, true);
+    };
+
+    // Main frame loop with active loop management
+    const render = () => {
+      animId = null;
+      if (!isVisible || document.hidden || reducedMotion) return;
+
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const ph = (now / 2200) * Math.PI * 2;
+      drawScene(elapsed, ph, false);
+
+      animId = requestAnimationFrame(render);
+    };
+
+    const startLoop = () => {
+      if (reducedMotion) {
+        renderStatic();
+        return;
+      }
+      if (animId == null && isVisible && !document.hidden) {
+        animId = requestAnimationFrame(render);
+      }
+    };
+
+    const stopLoop = () => {
+      if (animId != null) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    };
+
+    const rebloom = () => {
+      seed = Math.floor(Math.random() * 99999);
+      startTime = performance.now();
+      extraRoses = [];
+      buildGarden();
+      layout();
+      if (reducedMotion) renderStatic();
+      else startLoop();
+    };
+
+    const addRose = (cx?: number, cy?: number) => {
+      const x = cx ?? (W * (0.2 + Math.random() * 0.6));
+      const y = cy ?? (H * (0.3 + Math.random() * 0.4));
+      extraRoses.push({
+        x,
+        y,
+        birth: performance.now(),
+        R: (0.16 + Math.random() * 0.08) * baseS,
+        rot: (Math.random() - 0.5) * 1.2,
+        ph1: Math.random() * 6.28,
+        ph2: Math.random() * 6.28
+      });
+      if (extraRoses.length > 12) extraRoses.shift();
+      if (reducedMotion) renderStatic();
+      else startLoop();
+    };
+
+    // Pointer and touch handlers
+    canvas.addEventListener('pointerdown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      mouse = [x, y];
+      addRose(x, y);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse') {
+        const rect = canvas.getBoundingClientRect();
+        mouse = [e.clientX - rect.left, e.clientY - rect.top];
+      }
+    });
+
+    canvas.addEventListener('pointerleave', () => {
+      mouse = null;
+    });
+
+    rebloomBtn?.addEventListener('click', () => rebloom());
+    addRoseBtn?.addEventListener('click', () => addRose());
+
+    // Observers & visibility
+    const observer = new IntersectionObserver((entries) => {
+      isVisible = entries[0].isIntersecting;
+      if (isVisible) startLoop();
+      else stopLoop();
+    }, { threshold: 0.05 });
+    observer.observe(canvas);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    });
+
+    motionQuery.addEventListener('change', () => {
+      reducedMotion = motionQuery.matches;
+      if (reducedMotion) {
+        stopLoop();
+        renderStatic();
+      } else {
+        startLoop();
+      }
+    });
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          layout();
+          if (reducedMotion) renderStatic();
+        }
+      }
+    });
+    ro.observe(canvas);
+
+    // Initial setup
+    buildGarden();
+    if (document.fonts) {
+      document.fonts.ready.then(() => {
+        layout();
+        if (reducedMotion) renderStatic();
+        else startLoop();
+      });
+    } else {
+      layout();
+      if (reducedMotion) renderStatic();
+      else startLoop();
+    }
+  })();
+</script>

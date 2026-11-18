@@ -11,14 +11,29 @@ const items = pageRecommendations[theme] ?? [];
 ---
 
 {items.length > 0 && (
-  <section class="page-recommendations" aria-label="Explore more">
+  <section class="page-recommendations" aria-labelledby="recommendation-heading">
     <div class="container">
+      <div class="section-heading recommendation-heading" data-reveal>
+        <div>
+          <span class="eyebrow">Where to next?</span>
+          <h2 id="recommendation-heading">Pick your next <em>direction.</em></h2>
+        </div>
+        <p>Curiosity doesn't stop at one page.<br/>Choose where to explore next.</p>
+      </div>
       <div class="recommendations-grid">
-        {items.map((item) => (
-          <a class="recommendation-card" href={item.href}>
-            <span class="eyebrow">{item.eyebrow}</span>
-            <h2 set:html={item.heading} />
+        {items.map((item, index) => (
+          <a class="recommendation-card" href={item.href} data-reveal>
+            <span class="recommendation-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div class="recommendation-card-top">
+              <span class="eyebrow">{item.eyebrow}</span>
+              <h3 set:html={item.heading} />
+            </div>
             <p>{item.description}</p>
+            {item.tags?.length > 0 && (
+              <div class="recommendation-tags">
+                {item.tags.map((tag) => <span class="recommendation-tag">{tag}</span>)}
+              </div>
+            )}
             <span class="recommendation-cta">
               {item.linkLabel} <Arrow />
             </span>
