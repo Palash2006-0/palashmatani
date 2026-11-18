@@ -1,0 +1,30 @@
+---
+import Arrow from './Arrow.astro';
+import { pageRecommendations } from '../data/page-recommendations';
+
+interface Props {
+  theme?: 'home' | 'work' | 'journey' | 'playground';
+}
+
+const { theme = 'home' } = Astro.props;
+const items = pageRecommendations[theme] ?? [];
+---
+
+{items.length > 0 && (
+  <section class="page-recommendations" aria-label="Explore more">
+    <div class="container">
+      <div class="recommendations-grid">
+        {items.map((item) => (
+          <a class="recommendation-card" href={item.href}>
+            <span class="eyebrow">{item.eyebrow}</span>
+            <h2 set:html={item.heading} />
+            <p>{item.description}</p>
+            <span class="recommendation-cta">
+              {item.linkLabel} <Arrow />
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

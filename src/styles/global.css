@@ -229,6 +229,18 @@ main:focus { outline:none }
 .next-project .eyebrow { color:var(--muted-text) }
 .next-project h2 { font-size:48px; margin-top:12px }
 .next-project>.arrow { width:38px; height:38px; color:var(--accent) }
+/* Page recommendation band between main content and footer */
+.page-recommendations { border-top:1px solid var(--line); padding-block:72px }
+.recommendations-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px }
+.recommendation-card { display:flex; flex-direction:column; gap:12px; padding:36px; border:1px solid var(--line); border-radius:5px; transition:border-color 200ms, transform 200ms }
+.recommendation-card:hover { border-color:var(--accent); transform:translateY(-3px) }
+.recommendation-card .eyebrow { display:block }
+.recommendation-card h2 { font-size:clamp(28px,3.5vw,40px); line-height:1.1 }
+.recommendation-card h2 em { color:var(--accent) }
+.recommendation-card p { font-size:15px; line-height:1.75; color:var(--muted-text); flex:1 }
+.recommendation-cta { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--accent); margin-top:8px }
+.recommendation-cta .arrow { width:16px; height:16px; transition:transform 180ms }
+.recommendation-card:hover .recommendation-cta .arrow { transform:translate(2px,-2px) }
 .error-page { --accent:var(--marigold); --on-accent:var(--aubergine); --focus:var(--marigold); padding-block:70px; color:var(--ice); background:var(--aubergine); overflow:clip }
 .error-page h1 { font-size:72px; margin-top:24px }
 .error-page p { max-width:480px; margin-top:24px; color:var(--ice) }
@@ -415,6 +427,9 @@ main:focus { outline:none }
   .error-page { padding-block:45px }
   .error-page h1 { font-size:54px }
   .error-work-link { margin-left:0; margin-top:16px; display:table }
+  .recommendations-grid { grid-template-columns:1fr }
+  .recommendation-card { padding:28px }
+  .recommendation-card h2 { font-size:28px }
 }
 @media(max-width:359px) {
   .container { width:calc(100% - 32px) }
