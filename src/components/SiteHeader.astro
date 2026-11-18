@@ -11,7 +11,7 @@ const links = [{ label: 'Home', href: '/' }, { label: 'Work', href: '/work/' }, 
     <nav id="primary-navigation" aria-label="Main navigation">
       {links.map(({ href, label }) => <a href={href} aria-current={(href === '/' ? path === '/' : path.startsWith(href)) ? 'page' : undefined}>{label}</a>)}
       {profile.resume && <a href={profile.resume}>Resume</a>}
-      <a class="nav-contact" href="/#contact">Let's talk <Arrow /></a>
+      <a class="nav-contact" href="#contact">Let's talk <Arrow /></a>
     </nav>
   </div>
 </header>
