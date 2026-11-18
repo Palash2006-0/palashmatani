@@ -12,6 +12,13 @@
   --accent:var(--teal); --on-accent:var(--pearl); --focus:var(--teal);
   --header-bg:var(--teal); --header-text:var(--pearl); --header-mark:var(--lime);
   --header-height:76px; --ease:cubic-bezier(.22,1,.36,1);
+  --rec-bg:var(--teal); --rec-text:var(--lime); --rec-em:#ffffff;
+  --rec-muted:color-mix(in srgb,var(--pearl) 80%,white);
+  --rec-card-bg:rgba(0,0,0,0.22); --rec-card-border:color-mix(in srgb,var(--lime) 25%,transparent);
+  --rec-card-hover-border:var(--lime); --rec-card-hover-bg:rgba(0,0,0,0.38);
+  --rec-glow:rgba(185,241,47,0.22); --rec-tag-bg:color-mix(in srgb,var(--lime) 12%,transparent);
+  --rec-tag-border:color-mix(in srgb,var(--lime) 28%,transparent);
+  --rec-top-border:color-mix(in srgb,var(--lime) 20%,transparent);
   color-scheme:light;
 }
 [data-theme=home] {
@@ -19,22 +26,50 @@
   --line:#a5a1ac; --surface:#cbd2dc; --on-surface:var(--aubergine);
   --accent:var(--aubergine); --on-accent:var(--ice); --focus:var(--aubergine);
   --header-bg:var(--ice); --header-text:var(--aubergine); --header-mark:var(--aubergine);
+  --rec-bg:var(--aubergine); --rec-text:var(--marigold); --rec-em:#ffffff;
+  --rec-muted:color-mix(in srgb,var(--marigold) 80%,white);
+  --rec-card-bg:rgba(0,0,0,0.24); --rec-card-border:color-mix(in srgb,var(--marigold) 24%,transparent);
+  --rec-card-hover-border:var(--marigold); --rec-card-hover-bg:rgba(0,0,0,0.4);
+  --rec-glow:rgba(234,170,0,0.22); --rec-tag-bg:color-mix(in srgb,var(--marigold) 10%,transparent);
+  --rec-tag-border:color-mix(in srgb,var(--marigold) 25%,transparent);
+  --rec-top-border:color-mix(in srgb,var(--marigold) 20%,transparent);
 }
 [data-theme=work] {
   --page-bg:var(--black); --text:var(--cobalt); --muted-text:var(--cobalt);
   --line:#1558c94d; --surface:var(--cobalt); --on-surface:var(--black);
   --accent:var(--acid); --on-accent:var(--black); --focus:var(--acid);
   --header-bg:var(--black); --header-text:var(--cobalt); --header-mark:var(--acid); color-scheme:dark;
+  --rec-bg:#060913; --rec-text:var(--acid); --rec-em:#ffffff;
+  --rec-muted:color-mix(in srgb,#ffffff 82%,var(--cobalt));
+  --rec-card-bg:rgba(21,88,201,0.08); --rec-card-border:color-mix(in srgb,var(--cobalt) 40%,transparent);
+  --rec-card-hover-border:var(--acid); --rec-card-hover-bg:rgba(21,88,201,0.18);
+  --rec-glow:rgba(212,255,36,0.24); --rec-tag-bg:color-mix(in srgb,var(--cobalt) 22%,transparent);
+  --rec-tag-border:color-mix(in srgb,var(--acid) 32%,transparent);
+  --rec-top-border:color-mix(in srgb,var(--cobalt) 30%,transparent);
 }
 [data-theme=journey] {
   --page-bg:var(--sage); --text:var(--burgundy); --muted-text:#4d3430;
   --line:#898b7d; --surface:var(--cream); --on-surface:var(--burgundy);
   --accent:var(--burgundy); --on-accent:var(--cream); --focus:var(--burgundy);
   --header-bg:var(--sage); --header-text:var(--burgundy); --header-mark:var(--burgundy);
+  --rec-bg:var(--burgundy); --rec-text:var(--cream); --rec-em:#ffffff;
+  --rec-muted:color-mix(in srgb,var(--cream) 80%,white);
+  --rec-card-bg:rgba(0,0,0,0.22); --rec-card-border:color-mix(in srgb,var(--cream) 24%,transparent);
+  --rec-card-hover-border:var(--cream); --rec-card-hover-bg:rgba(0,0,0,0.38);
+  --rec-glow:rgba(232,210,181,0.22); --rec-tag-bg:color-mix(in srgb,var(--cream) 12%,transparent);
+  --rec-tag-border:color-mix(in srgb,var(--cream) 28%,transparent);
+  --rec-top-border:color-mix(in srgb,var(--cream) 20%,transparent);
 }
 [data-theme=playground] {
   --page-bg:var(--orchid); --text:var(--eggplant); --muted-text:#61315f;
   --line:#b77ead; --surface:var(--orange); --on-surface:var(--eggplant);
   --accent:var(--orange); --on-accent:var(--eggplant); --focus:var(--eggplant);
   --header-bg:var(--orchid); --header-text:var(--eggplant); --header-mark:var(--eggplant);
+  --rec-bg:var(--eggplant); --rec-text:var(--orange); --rec-em:#ffffff;
+  --rec-muted:color-mix(in srgb,#ffffff 82%,var(--orange));
+  --rec-card-bg:rgba(0,0,0,0.28); --rec-card-border:color-mix(in srgb,var(--orange) 28%,transparent);
+  --rec-card-hover-border:var(--orange); --rec-card-hover-bg:rgba(0,0,0,0.44);
+  --rec-glow:rgba(255,90,10,0.28); --rec-tag-bg:color-mix(in srgb,var(--orange) 12%,transparent);
+  --rec-tag-border:color-mix(in srgb,var(--orange) 30%,transparent);
+  --rec-top-border:color-mix(in srgb,var(--orange) 25%,transparent);
 }
