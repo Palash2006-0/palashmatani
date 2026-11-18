@@ -1,5 +1,5 @@
 ---
-// Living Botanical Garden Canvas inspired by Type Garden 
+// Living Botanical Garden Canvas inspired by Type Garden
 // Procedurally grows stems, leaves, thorns, and blooming roses across 'palash matani'
 ---
 
@@ -11,7 +11,7 @@
   <div class="garden-meta-bar">
     <div class="garden-label">
       <span class="garden-status-dot" aria-hidden="true"></span>
-      <span class="garden-title-text"> Palash Matani</span>
+      <span class="garden-title-text">Palash Matani</span>
     </div>
     <div class="garden-actions">
       <button type="button" class="garden-btn" data-garden-rebloom title="Re-bloom the botanical garden">
@@ -26,9 +26,8 @@
   <div class="garden-canvas-wrap">
     <canvas id="playground-garden-canvas" class="garden-canvas" aria-label="Living botanical garden spelling palash matani with blooming roses and vines"></canvas>
     <div class="garden-hint-bar" aria-hidden="true">
-      <span>move cursor to lean</span>
-      <span class="hint-dot">·</span>
-      <span>click anywhere to plant a rose</span>
+      <span class="hint-desktop">move cursor to lean · click anywhere to plant a rose</span>
+      <span class="hint-touch">tap anywhere to plant a rose</span>
     </div>
   </div>
 </div>
@@ -54,6 +53,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     padding: 10px 18px;
     border-bottom: 1px solid var(--line);
     font-family: 'DM Mono', ui-monospace, monospace;
@@ -102,6 +103,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    touch-action: manipulation;
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
   }
 
@@ -119,8 +121,9 @@
   .garden-canvas-wrap {
     position: relative;
     width: 100%;
-    height: clamp(230px, 32vw, 320px);
+    height: clamp(190px, 30vw, 310px);
     cursor: crosshair;
+    touch-action: pan-y;
   }
 
   .garden-canvas {
@@ -131,38 +134,63 @@
 
   .garden-hint-bar {
     position: absolute;
-    bottom: 10px;
-    left: 18px;
-    right: 18px;
+    bottom: 8px;
+    left: 14px;
+    right: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
     font-family: 'DM Mono', ui-monospace, monospace;
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--muted-text);
     opacity: 0.72;
     pointer-events: none;
     letter-spacing: 0.05em;
     user-select: none;
+    text-align: center;
   }
 
-  .hint-dot {
-    opacity: 0.5;
+  .hint-touch { display: none; }
+  .hint-desktop { display: inline; }
+
+  @media (hover: none) and (pointer: coarse) {
+    .hint-touch { display: inline; }
+    .hint-desktop { display: none; }
   }
 
   @media (max-width: 640px) {
+    .playground-garden-banner {
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
     .garden-meta-bar {
       padding: 8px 12px;
       font-size: 10px;
     }
     .garden-btn {
-      padding: 3px 8px;
+      padding: 3px 9px;
       font-size: 10px;
     }
+    .garden-canvas-wrap {
+      height: clamp(180px, 46vw, 230px);
+    }
     .garden-hint-bar {
+      font-size: 9px;
+      bottom: 5px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .garden-meta-bar {
+      padding: 6px 10px;
       font-size: 9.5px;
-      bottom: 6px;
+    }
+    .garden-btn {
+      padding: 2px 7px;
+      font-size: 9px;
+    }
+    .garden-canvas-wrap {
+      height: 175px;
     }
   }
 
@@ -294,7 +322,11 @@
     let startTime = performance.now();
     let mouse: [number, number] | null = null;
     let isVisible = true;
+    let animId: number | null = null;
     let extraRoses: { x: number; y: number; birth: number; R: number; rot: number; ph1: number; ph2: number }[] = [];
+
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = motionQuery.matches;
 
     interface LetterElement {
       t: 'stem' | 'leaf' | 'rose';
@@ -472,15 +504,18 @@
     const layout = () => {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      dpr = window.devicePixelRatio || 1;
+      if (!rect.width || !rect.height) return;
+
+      // Cap DPR to 2 to prevent excessive fill-rate drain on ultra-high-res mobile screens
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
       W = rect.width;
       H = rect.height;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Measure letters
-      baseS = Math.min(W * 0.078, H * 0.42);
+      // Measure letters with responsive scaling
+      baseS = Math.max(18, Math.min(W * 0.076, H * 0.42));
       ctx.font = `700 ${baseS}px ${FONT_FAMILY}`;
 
       let totalWidth = 0;
@@ -493,8 +528,8 @@
         totalWidth += l.w;
       });
 
-      // Scale if needed to fit with 8% padding
-      const maxW = W * 0.86;
+      // Fit inside 88% width
+      const maxW = W * 0.88;
       if (totalWidth > maxW) {
         const scale = maxW / totalWidth;
         baseS *= scale;
@@ -507,7 +542,7 @@
       }
 
       let curX = (W - totalWidth) / 2;
-      const baselineY = H * 0.58;
+      const baselineY = H * 0.57;
 
       letters.forEach(l => {
         l.x = curX + l.w / 2;
@@ -633,36 +668,30 @@
       }
     };
 
-    // Main frame loop
-    const render = () => {
-      if (!isVisible) {
-        requestAnimationFrame(render);
-        return;
-      }
-
+    // Shared draw routine
+    const drawScene = (elapsed: number, ph: number, staticMode = false) => {
       ctx.clearRect(0, 0, W, H);
-      const now = performance.now();
-      const elapsed = now - startTime;
       const S = baseS;
 
-      // Mouse lean & wind sway
-      const ph = (now / 2200) * Math.PI * 2;
-      letters.forEach(l => {
-        let tx = 0, ty = 0;
-        if (mouse) {
-          const dx = mouse[0] - l.x, dy = mouse[1] - l.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 260 && dist > 1) {
-            const pull = (1 - dist / 260);
-            tx = (dx / dist) * pull * 14;
-            ty = (dy / dist) * pull * 8;
+      if (!staticMode) {
+        letters.forEach(l => {
+          let tx = 0, ty = 0;
+          if (mouse) {
+            const dx = mouse[0] - l.x, dy = mouse[1] - l.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 260 && dist > 1) {
+              const pull = (1 - dist / 260);
+              tx = (dx / dist) * pull * 14;
+              ty = (dy / dist) * pull * 8;
+            }
           }
-        }
-        l.lean[0] += (tx - l.lean[0]) * 0.08;
-        l.lean[1] += (ty - l.lean[1]) * 0.08;
-      });
+          l.lean[0] += (tx - l.lean[0]) * 0.08;
+          l.lean[1] += (ty - l.lean[1]) * 0.08;
+        });
+      }
 
       const getWarped = (lx: number, ly: number, ox: number, oy: number, lean: [number, number]) => {
+        if (staticMode) return [lx + ox, ly + oy];
         const hh = Math.max(0, (ly - oy) / S);
         const swayX = Math.sin(ph + lx * 0.005 + hh) * S * 0.02 * hh;
         const swayY = Math.cos(ph + lx * 0.003) * S * 0.007 * hh;
@@ -672,16 +701,15 @@
         ];
       };
 
-      // Draw Pass 0 (Back stems & elements)
       const drawPass = (layer: number) => {
         letters.forEach(l => {
           if (l.ch === ' ') return;
           l.els.forEach(e => {
-            const age = elapsed - e.d0;
+            const age = staticMode ? 99999 : elapsed - e.d0;
             if (age <= 0) return;
 
             if (e.t === 'stem' && e.pts && e.segs) {
-              const fr = eo(age / (e.dur || 500));
+              const fr = staticMode ? 1 : eo(age / (e.dur || 500));
               if (fr <= 0) return;
               const mapped = e.pts.map(p => getWarped(l.x, l.y, p[0] * S, p[1] * S, l.lean));
 
@@ -702,20 +730,18 @@
             } else if (e.layer === layer) {
               const [px, py] = getWarped(l.x, l.y, (e.x || 0) * S, (e.y || 0) * S, l.lean);
               if (e.t === 'leaf') {
-                const sc = spr(age / 900, 7, 15);
-                if (sc > 0.001) drawLeaf(px, py, (e.a || 0) + Math.sin(ph + e.id) * 0.08, (e.L || 0.16) * S * sc, e.bend || 0);
+                const sc = staticMode ? 1 : spr(age / 900, 7, 15);
+                if (sc > 0.001) drawLeaf(px, py, (e.a || 0) + (staticMode ? 0 : Math.sin(ph + e.id) * 0.08), (e.L || 0.16) * S * sc, e.bend || 0);
               } else if (e.t === 'rose') {
-                drawRose(px, py, (e.R || 0.16) * S, (e.rot || 0) + Math.sin(ph + e.id) * 0.06, e, age);
+                drawRose(px, py, (e.R || 0.16) * S, (e.rot || 0) + (staticMode ? 0 : Math.sin(ph + e.id) * 0.06), e, age);
               }
             }
           });
         });
       };
 
-      // 1. Behind letters
       drawPass(0);
 
-      // 2. Letters
       ctx.font = `700 ${S}px ${FONT_FAMILY}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'alphabetic';
@@ -726,21 +752,46 @@
         }
       });
 
-      // 3. In front of letters
       drawPass(1);
 
-      // 4. Extra clicked roses
       extraRoses.forEach(r => {
-        const roseAge = now - r.birth;
-        drawRose(r.x, r.y, r.R, r.rot + Math.sin(ph) * 0.06, r, roseAge);
+        const roseAge = staticMode ? 99999 : performance.now() - r.birth;
+        drawRose(r.x, r.y, r.R, r.rot + (staticMode ? 0 : Math.sin(ph) * 0.06), r, roseAge);
       });
-
-      requestAnimationFrame(render);
     };
 
-    // Event handlers
-    const onResize = () => {
-      layout();
+    const renderStatic = () => {
+      drawScene(99999, 0, true);
+    };
+
+    // Main frame loop with active loop management
+    const render = () => {
+      animId = null;
+      if (!isVisible || document.hidden || reducedMotion) return;
+
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const ph = (now / 2200) * Math.PI * 2;
+      drawScene(elapsed, ph, false);
+
+      animId = requestAnimationFrame(render);
+    };
+
+    const startLoop = () => {
+      if (reducedMotion) {
+        renderStatic();
+        return;
+      }
+      if (animId == null && isVisible && !document.hidden) {
+        animId = requestAnimationFrame(render);
+      }
+    };
+
+    const stopLoop = () => {
+      if (animId != null) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
     };
 
     const rebloom = () => {
@@ -749,6 +800,8 @@
       extraRoses = [];
       buildGarden();
       layout();
+      if (reducedMotion) renderStatic();
+      else startLoop();
     };
 
     const addRose = (cx?: number, cy?: number) => {
@@ -764,43 +817,78 @@
         ph2: Math.random() * 6.28
       });
       if (extraRoses.length > 12) extraRoses.shift();
+      if (reducedMotion) renderStatic();
+      else startLoop();
     };
 
-    canvas.addEventListener('pointermove', (e) => {
+    // Pointer and touch handlers
+    canvas.addEventListener('pointerdown', (e) => {
       const rect = canvas.getBoundingClientRect();
-      mouse = [e.clientX - rect.left, e.clientY - rect.top];
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      mouse = [x, y];
+      addRose(x, y);
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse') {
+        const rect = canvas.getBoundingClientRect();
+        mouse = [e.clientX - rect.left, e.clientY - rect.top];
+      }
     });
 
     canvas.addEventListener('pointerleave', () => {
       mouse = null;
     });
 
-    canvas.addEventListener('click', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      addRose(e.clientX - rect.left, e.clientY - rect.top);
-    });
-
     rebloomBtn?.addEventListener('click', () => rebloom());
     addRoseBtn?.addEventListener('click', () => addRose());
 
-    // Intersection observer to pause offscreen
+    // Observers & visibility
     const observer = new IntersectionObserver((entries) => {
       isVisible = entries[0].isIntersecting;
-    }, { threshold: 0.1 });
+      if (isVisible) startLoop();
+      else stopLoop();
+    }, { threshold: 0.05 });
     observer.observe(canvas);
 
-    window.addEventListener('resize', onResize);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    });
 
-    // Initial setup when font is ready
+    motionQuery.addEventListener('change', () => {
+      reducedMotion = motionQuery.matches;
+      if (reducedMotion) {
+        stopLoop();
+        renderStatic();
+      } else {
+        startLoop();
+      }
+    });
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          layout();
+          if (reducedMotion) renderStatic();
+        }
+      }
+    });
+    ro.observe(canvas);
+
+    // Initial setup
     buildGarden();
     if (document.fonts) {
       document.fonts.ready.then(() => {
         layout();
-        requestAnimationFrame(render);
+        if (reducedMotion) renderStatic();
+        else startLoop();
       });
     } else {
       layout();
-      requestAnimationFrame(render);
+      if (reducedMotion) renderStatic();
+      else startLoop();
     }
   })();
 </script>

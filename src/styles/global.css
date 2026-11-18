@@ -437,12 +437,18 @@ main:focus { outline:none }
   .error-page { padding-block:45px }
   .error-page h1 { font-size:54px }
   .error-work-link { margin-left:0; margin-top:16px; display:table }
-  .recommendations-grid { grid-template-columns:1fr }
-  .recommendation-card { padding:30px 24px }
-  .recommendation-card h3 { font-size:27px }
-  .recommendation-index { font-size:56px; top:10px; right:16px }
+  .page-recommendations { padding-block:54px }
+  .recommendation-heading { margin-bottom:32px }
+  .recommendations-grid { grid-template-columns:1fr; gap:20px }
+  .recommendation-card { padding:28px 22px }
+  .recommendation-card h3 { font-size:26px }
+  .recommendation-index { font-size:52px; top:10px; right:16px }
 }
 @media(max-width:359px) {
+  .page-recommendations { padding-block:44px }
+  .recommendation-card { padding:22px 16px }
+  .recommendation-card h3 { font-size:22px }
+  .recommendation-index { font-size:42px; top:6px; right:12px }
   .container { width:calc(100% - 32px) }
   .hero h1 { font-size:43px }
   .hero-actions { gap:12px }
