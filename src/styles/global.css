@@ -230,16 +230,16 @@ main:focus { outline:none }
 .next-project h2 { font-size:48px; margin-top:12px }
 .next-project>.arrow { width:38px; height:38px; color:var(--accent) }
 /* Page recommendation band between main content and footer */
-.page-recommendations { border-top:1px solid var(--line); padding-block:72px }
+.page-recommendations { background:var(--aubergine); color:var(--marigold); border-top:1px solid color-mix(in srgb,var(--marigold) 20%,transparent); padding-block:72px }
 .recommendations-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px }
-.recommendation-card { display:flex; flex-direction:column; gap:12px; padding:36px; border:1px solid var(--line); border-radius:5px; transition:border-color 200ms, transform 200ms }
-.recommendation-card:hover { border-color:var(--accent); transform:translateY(-3px) }
-.recommendation-card .eyebrow { display:block }
-.recommendation-card h2 { font-size:clamp(28px,3.5vw,40px); line-height:1.1 }
-.recommendation-card h2 em { color:var(--accent) }
-.recommendation-card p { font-size:15px; line-height:1.75; color:var(--muted-text); flex:1 }
-.recommendation-cta { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--accent); margin-top:8px }
-.recommendation-cta .arrow { width:16px; height:16px; transition:transform 180ms }
+.recommendation-card { display:flex; flex-direction:column; gap:12px; padding:36px; background:rgba(0,0,0,0.22); border:1px solid color-mix(in srgb,var(--marigold) 30%,transparent); border-radius:5px; color:var(--marigold); transition:border-color 200ms, transform 200ms, background 200ms }
+.recommendation-card:hover { border-color:var(--marigold); background:rgba(0,0,0,0.38); transform:translateY(-3px) }
+.recommendation-card .eyebrow { display:block; color:var(--marigold); opacity:.85 }
+.recommendation-card h2 { font-size:clamp(28px,3.5vw,40px); line-height:1.1; color:var(--marigold) }
+.recommendation-card h2 em { color:var(--marigold); font-style:italic }
+.recommendation-card p { font-size:15px; line-height:1.75; color:color-mix(in srgb,var(--marigold) 80%,white); flex:1 }
+.recommendation-cta { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--marigold); margin-top:8px }
+.recommendation-cta .arrow { width:16px; height:16px; stroke:var(--marigold); transition:transform 180ms }
 .recommendation-card:hover .recommendation-cta .arrow { transform:translate(2px,-2px) }
 .error-page { --accent:var(--marigold); --on-accent:var(--aubergine); --focus:var(--marigold); padding-block:70px; color:var(--ice); background:var(--aubergine); overflow:clip }
 .error-page h1 { font-size:72px; margin-top:24px }
