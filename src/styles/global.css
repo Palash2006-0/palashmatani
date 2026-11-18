@@ -230,17 +230,27 @@ main:focus { outline:none }
 .next-project h2 { font-size:48px; margin-top:12px }
 .next-project>.arrow { width:38px; height:38px; color:var(--accent) }
 /* Page recommendation band between main content and footer */
-.page-recommendations { background:var(--aubergine); color:var(--marigold); border-top:1px solid color-mix(in srgb,var(--marigold) 20%,transparent); padding-block:72px }
-.recommendations-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px }
-.recommendation-card { display:flex; flex-direction:column; gap:12px; padding:36px; background:rgba(0,0,0,0.22); border:1px solid color-mix(in srgb,var(--marigold) 30%,transparent); border-radius:5px; color:var(--marigold); transition:border-color 200ms, transform 200ms, background 200ms }
-.recommendation-card:hover { border-color:var(--marigold); background:rgba(0,0,0,0.38); transform:translateY(-3px) }
+.page-recommendations { background:var(--aubergine); color:var(--marigold); border-top:1px solid color-mix(in srgb,var(--marigold) 20%,transparent); padding-block:84px }
+.recommendation-heading { margin-bottom:48px }
+.recommendation-heading .eyebrow { color:var(--marigold); opacity:.85 }
+.recommendation-heading h2 { color:var(--marigold) }
+.recommendation-heading h2 em { color:#ffffff; font-style:italic }
+.recommendation-heading p { color:color-mix(in srgb,var(--marigold) 80%,white); max-width:320px; font-size:15px; line-height:1.7 }
+.recommendations-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px }
+.recommendation-card { position:relative; overflow:hidden; isolation:isolate; display:flex; flex-direction:column; gap:14px; padding:38px; background:rgba(0,0,0,0.24); border:1px solid color-mix(in srgb,var(--marigold) 24%,transparent); border-radius:6px; color:var(--marigold); transition:border-color 220ms, transform 220ms, box-shadow 220ms, background 220ms }
+.recommendation-card:hover { border-color:var(--marigold); background:rgba(0,0,0,0.38); transform:translateY(-4px); box-shadow:0 16px 36px -8px rgba(0,0,0,0.45), 0 0 28px -4px rgba(234,170,0,0.18) }
+.recommendation-index { position:absolute; top:14px; right:26px; font:500 78px/1 var(--font-display); color:var(--marigold); opacity:.12; pointer-events:none; transition:opacity 240ms, transform 240ms; user-select:none; z-index:0 }
+.recommendation-card:hover .recommendation-index { opacity:.28; transform:scale(1.08) rotate(-2deg) }
+.recommendation-card-top { position:relative; z-index:1 }
 .recommendation-card .eyebrow { display:block; color:var(--marigold); opacity:.85 }
-.recommendation-card h2 { font-size:clamp(28px,3.5vw,40px); line-height:1.1; color:var(--marigold) }
-.recommendation-card h2 em { color:var(--marigold); font-style:italic }
-.recommendation-card p { font-size:15px; line-height:1.75; color:color-mix(in srgb,var(--marigold) 80%,white); flex:1 }
-.recommendation-cta { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--marigold); margin-top:8px }
-.recommendation-cta .arrow { width:16px; height:16px; stroke:var(--marigold); transition:transform 180ms }
-.recommendation-card:hover .recommendation-cta .arrow { transform:translate(2px,-2px) }
+.recommendation-card h3 { font:500 clamp(28px,3.2vw,38px)/1.1 var(--font-display); color:var(--marigold); margin-top:8px }
+.recommendation-card h3 em { color:#ffffff; font-style:italic }
+.recommendation-card p { font-size:15px; line-height:1.75; color:color-mix(in srgb,var(--marigold) 80%,white); flex:1; position:relative; z-index:1 }
+.recommendation-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:12px; position:relative; z-index:1 }
+.recommendation-tag { font-size:11px; font-weight:500; letter-spacing:.02em; padding:4px 10px; border-radius:999px; background:color-mix(in srgb,var(--marigold) 10%,transparent); border:1px solid color-mix(in srgb,var(--marigold) 25%,transparent); color:var(--marigold) }
+.recommendation-cta { display:inline-flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--marigold); margin-top:10px; position:relative; z-index:1 }
+.recommendation-cta .arrow { width:16px; height:16px; stroke:var(--marigold); transition:transform 200ms }
+.recommendation-card:hover .recommendation-cta .arrow { transform:translate(3px,-3px) }
 .error-page { --accent:var(--marigold); --on-accent:var(--aubergine); --focus:var(--marigold); padding-block:70px; color:var(--ice); background:var(--aubergine); overflow:clip }
 .error-page h1 { font-size:72px; margin-top:24px }
 .error-page p { max-width:480px; margin-top:24px; color:var(--ice) }
@@ -428,8 +438,9 @@ main:focus { outline:none }
   .error-page h1 { font-size:54px }
   .error-work-link { margin-left:0; margin-top:16px; display:table }
   .recommendations-grid { grid-template-columns:1fr }
-  .recommendation-card { padding:28px }
-  .recommendation-card h2 { font-size:28px }
+  .recommendation-card { padding:30px 24px }
+  .recommendation-card h3 { font-size:27px }
+  .recommendation-index { font-size:56px; top:10px; right:16px }
 }
 @media(max-width:359px) {
   .container { width:calc(100% - 32px) }
