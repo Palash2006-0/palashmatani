@@ -4,9 +4,285 @@ import { profile } from '../data/profile';
 ---
 <footer class="site-footer" id="contact">
   <div class="container">
-    <div class="contact-top"><span class="eyebrow">A conversation is a good start</span><span class="availability"><span class="status-dot" aria-hidden="true"></span> Open to software / AI internships</span></div>
-    <div class="contact-heading"><h2>Let's build<br/>something <em>useful.</em></h2><a class="contact-arrow" href={`mailto:${profile.email}`} aria-label="Email Palash Matani"><Arrow /></a></div>
+    <div class="contact-top">
+      <span class="eyebrow">A conversation is a good start</span>
+      <span class="availability"><span class="status-dot" aria-hidden="true"></span> Open to software / AI internships</span>
+    </div>
+
+    <div class="contact-heading">
+      <h2 class="contact-title" aria-label="Let's build something useful.">
+        <span class="sr-only">Let's build something useful.</span>
+        <span class="contact-title-visual" aria-hidden="true">
+          <span class="heading-line">Let's <span class="word-flip-slot" data-slot="verb"><span class="word-flip-box"><em class="word-flip-face flip-face-a is-active">build</em><em class="word-flip-face flip-face-b is-idle">ship</em></span></span></span><br/>
+          <span class="heading-line">something <span class="word-flip-slot" data-slot="adj"><span class="word-flip-box"><em class="word-flip-face flip-face-a is-active">useful.</em><em class="word-flip-face flip-face-b is-idle">real.</em></span></span></span>
+        </span>
+      </h2>
+      <a class="contact-arrow" href={`mailto:${profile.email}`} aria-label="Email Palash Matani"><Arrow /></a>
+    </div>
+
     <a class="email-link" href={`mailto:${profile.email}`}>{profile.email}</a>
-    <div class="footer-bottom"><span>© {new Date().getFullYear()} Palash Matani</span><span class="footer-location">Mumbai, India</span><div class="footer-links"><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <Arrow /></a>{profile.github && <a href={profile.github}>GitHub <Arrow /></a>}{profile.resume && <a href={profile.resume}>Resume <Arrow /></a>}<a href="#top">Back to top ↑</a></div></div>
+
+    <div class="footer-bottom">
+      <span>© {new Date().getFullYear()} Palash Matani</span>
+      <span class="footer-location">Mumbai, India</span>
+      <div class="footer-links">
+        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <Arrow /></a>
+        {profile.github && <a href={profile.github}>GitHub <Arrow /></a>}
+        {profile.resume && <a href={profile.resume}>Resume <Arrow /></a>}
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </div>
   </div>
 </footer>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .contact-title-visual {
+    display: inline-block;
+  }
+
+  .heading-line {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  .word-flip-slot {
+    display: inline-block;
+    vertical-align: baseline;
+    perspective: 800px;
+    -webkit-perspective: 800px;
+  }
+
+  .word-flip-box {
+    display: inline-grid;
+    grid-template-columns: minmax(0, 1fr);
+    position: relative;
+    vertical-align: baseline;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    /* Anti-clipping padding for italic descenders and right-leaning slants */
+    padding-block: 0.14em;
+    margin-block: -0.14em;
+    padding-inline-end: 0.16em;
+    margin-inline-end: -0.08em;
+  }
+
+  .word-flip-face {
+    grid-area: 1 / 1;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    color: inherit;
+    white-space: nowrap;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform-origin: 50% 50% -0.35em;
+    will-change: transform, opacity;
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .word-flip-face.is-active {
+    transform: rotateX(0deg);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .word-flip-face.is-flipping-out {
+    transform: rotateX(-90deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .word-flip-face.is-idle {
+    transition: none !important;
+    transform: rotateX(90deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .word-flip-face.is-flipping-in {
+    transform: rotateX(0deg);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word-flip-face {
+      transition: none !important;
+      transform: none !important;
+      will-change: auto !important;
+    }
+    .flip-face-b {
+      display: none !important;
+    }
+    .flip-face-a {
+      display: inline !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const footer = document.getElementById('contact');
+    if (!footer) return;
+
+    // Guard: Reduced motion fallback
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (motionQuery.matches) return;
+
+    const PAIRS = [
+      { verb: 'build', adj: 'useful.' },
+      { verb: 'ship', adj: 'real.' },
+      { verb: 'solve', adj: 'hard.' },
+      { verb: 'craft', adj: 'sharp.' }
+    ];
+
+    const verbSlot = footer.querySelector('[data-slot="verb"]') as HTMLElement | null;
+    const adjSlot = footer.querySelector('[data-slot="adj"]') as HTMLElement | null;
+    if (!verbSlot || !adjSlot) return;
+
+    interface SlotState {
+      slot: HTMLElement;
+      faceA: HTMLElement;
+      faceB: HTMLElement;
+      activeFace: HTMLElement;
+      nextFace: HTMLElement;
+      isAnimating: boolean;
+    }
+
+    const createSlotState = (slot: HTMLElement): SlotState | null => {
+      const faceA = slot.querySelector('.flip-face-a') as HTMLElement | null;
+      const faceB = slot.querySelector('.flip-face-b') as HTMLElement | null;
+      if (!faceA || !faceB) return null;
+      return {
+        slot,
+        faceA,
+        faceB,
+        activeFace: faceA,
+        nextFace: faceB,
+        isAnimating: false
+      };
+    };
+
+    const verbState = createSlotState(verbSlot);
+    const adjState = createSlotState(adjSlot);
+    if (!verbState || !adjState) return;
+
+    const flipSlot = (state: SlotState, newWord: string) => {
+      if (state.isAnimating) return;
+      state.isAnimating = true;
+
+      // 1. Prime the next face with target word and idle orientation
+      state.nextFace.textContent = newWord;
+      state.nextFace.className = 'word-flip-face is-idle';
+
+      // 2. Force reflow to guarantee CSS transition triggers
+      void state.nextFace.offsetWidth;
+
+      // 3. Animate active face out (-90deg) and next face in (0deg)
+      state.activeFace.className = 'word-flip-face is-flipping-out';
+      state.nextFace.className = 'word-flip-face is-flipping-in';
+
+      // 4. On transition completion, swap roles
+      window.setTimeout(() => {
+        state.nextFace.className = 'word-flip-face is-active';
+        state.activeFace.className = 'word-flip-face is-idle';
+
+        // Swap references
+        const prevActive = state.activeFace;
+        state.activeFace = state.nextFace;
+        state.nextFace = prevActive;
+        state.isAnimating = false;
+      }, 530);
+    };
+
+    let pairIndex = 0;
+    const INTERVAL_MS = 3500;
+    let timerId: number | null = null;
+    let isIntersecting = false;
+    let isHovered = false;
+
+    const cycleNext = () => {
+      if (!isIntersecting || isHovered || document.hidden) return;
+      pairIndex = (pairIndex + 1) % PAIRS.length;
+      const pair = PAIRS[pairIndex];
+
+      // Flip verb first
+      flipSlot(verbState, pair.verb);
+
+      // Flip adjective 150ms later (stagger)
+      window.setTimeout(() => {
+        flipSlot(adjState, pair.adj);
+      }, 150);
+    };
+
+    const startTimer = () => {
+      if (timerId != null) return;
+      timerId = window.setInterval(cycleNext, INTERVAL_MS);
+    };
+
+    const stopTimer = () => {
+      if (timerId != null) {
+        window.clearInterval(timerId);
+        timerId = null;
+      }
+    };
+
+    // Pause on hover or focus over headline
+    const heading = footer.querySelector('.contact-heading') as HTMLElement | null;
+    if (heading) {
+      heading.addEventListener('pointerenter', () => { isHovered = true; });
+      heading.addEventListener('pointerleave', () => { isHovered = false; });
+      heading.addEventListener('focusin', () => { isHovered = true; });
+      heading.addEventListener('focusout', () => { isHovered = false; });
+    }
+
+    // Viewport gating via IntersectionObserver
+    const observer = new IntersectionObserver((entries) => {
+      isIntersecting = entries[0].isIntersecting;
+      if (isIntersecting) {
+        startTimer();
+      } else {
+        stopTimer();
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footer);
+
+    // Pause when switching tabs
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopTimer();
+      } else if (isIntersecting && !isHovered) {
+        startTimer();
+      }
+    });
+
+    // Handle dynamic reduced-motion toggle
+    motionQuery.addEventListener('change', () => {
+      if (motionQuery.matches) {
+        stopTimer();
+        verbState.faceA.textContent = PAIRS[0].verb;
+        verbState.faceA.className = 'word-flip-face is-active';
+        adjState.faceA.textContent = PAIRS[0].adj;
+        adjState.faceA.className = 'word-flip-face is-active';
+      } else if (isIntersecting) {
+        startTimer();
+      }
+    });
+  })();
+</script>
