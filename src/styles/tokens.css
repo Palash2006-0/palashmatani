@@ -4,6 +4,8 @@
   --pearl:#f2f0e9; --teal:#0b3048; --lime:#b9f12f;
   --ice:#dde3e8; --aubergine:#3a0f34; --marigold:#eaaa00;
   --black:#030407; --cobalt:#1558c9; --acid:#d4ff24;
+  --charcoal:#090907; --surface-dark:#13120f; --warm-white:#f2efe9;
+  --warm-stone:#c4b9a8; --burnt-amber:#b99073; --earth-brown:#6c5636;
   --powder:#8db9f0; --lavender:#e9e8f8; --peach:#f5b69e;
   --sage:#a5a79b; --cream:#e8d2b5; --burgundy:#590907;
   --orchid:#e7b0de; --eggplant:#400849; --orange:#ff5a0a;
@@ -35,17 +37,17 @@
   --rec-top-border:color-mix(in srgb,var(--marigold) 20%,transparent);
 }
 [data-theme=work] {
-  --page-bg:var(--black); --text:var(--cobalt); --muted-text:var(--cobalt);
-  --line:#1558c94d; --surface:var(--cobalt); --on-surface:var(--black);
-  --accent:var(--acid); --on-accent:var(--black); --focus:var(--acid);
-  --header-bg:var(--black); --header-text:var(--cobalt); --header-mark:var(--acid); color-scheme:dark;
-  --rec-bg:#060913; --rec-text:var(--acid); --rec-em:#ffffff;
-  --rec-muted:color-mix(in srgb,#ffffff 82%,var(--cobalt));
-  --rec-card-bg:rgba(21,88,201,0.08); --rec-card-border:color-mix(in srgb,var(--cobalt) 40%,transparent);
-  --rec-card-hover-border:var(--acid); --rec-card-hover-bg:rgba(21,88,201,0.18);
-  --rec-glow:rgba(212,255,36,0.24); --rec-tag-bg:color-mix(in srgb,var(--cobalt) 22%,transparent);
-  --rec-tag-border:color-mix(in srgb,var(--acid) 32%,transparent);
-  --rec-top-border:color-mix(in srgb,var(--cobalt) 30%,transparent);
+  --page-bg:#090907; --text:#f2efe9; --muted-text:#c4b9a8;
+  --line:rgba(108,86,54,0.45); --surface:#13120f; --on-surface:#f2efe9;
+  --accent:#b99073; --accent-subtle:rgba(108,86,54,0.45); --on-accent:#090907; --focus:#b99073;
+  --header-bg:#090907; --header-text:#f2efe9; --header-mark:#b99073; color-scheme:dark;
+  --rec-bg:#090907; --rec-text:#b99073; --rec-em:#f2efe9;
+  --rec-muted:#c4b9a8;
+  --rec-card-bg:#13120f; --rec-card-border:rgba(108,86,54,0.45);
+  --rec-card-hover-border:#b99073; --rec-card-hover-bg:rgba(185,144,115,0.12);
+  --rec-glow:rgba(185,144,115,0.22); --rec-tag-bg:rgba(108,86,54,0.2);
+  --rec-tag-border:rgba(108,86,54,0.45);
+  --rec-top-border:rgba(108,86,54,0.45);
 }
 [data-theme=journey] {
   --page-bg:var(--sage); --text:var(--burgundy); --muted-text:#4d3430;
